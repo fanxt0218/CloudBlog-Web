@@ -1,0 +1,47 @@
+
+      <!DOCTYPE html>
+      <html lang="zh-CN">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>${title}</title>
+        
+        <!-- highlight.js 主题（黑色背景）-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+        
+        <style>
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #ddd;
+            background-color: #1e1e1e;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+          }
+          pre {
+            border-radius: 8px;
+            overflow-x: auto;
+            padding: 16px;
+          }
+          code {
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+          }
+        </style>
+      </head>
+        
+      <body>
+        ${htmlContent}
+        
+        <!-- highlight.js 脚本 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll("pre code").forEach(block => {
+              hljs.highlightElement(block);
+            });
+          });
+        </script>
+      </body>
+      </html>
