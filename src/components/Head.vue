@@ -150,7 +150,7 @@
               </path><path d="M516.7 624l19.4-173.3H460L627.3 208l-19.4 173.3H684L516.7 624zM576 912H448c-4.4 0-8.4-1.8-11.3-4.7-2.9-2.9-4.7-6.9-4.7-11.3 0-8.8 7.2-16 16-16h128c4.4 0 8.4 1.8 11.3 4.7 2.9 2.9 4.7 6.9 4.7 11.3 0 8.8-7.2 16-16 16z m0-64H448c-4.4 0-8.4-1.8-11.3-4.7-2.9-2.9-4.7-6.9-4.7-11.3 0-8.8 7.2-16 16-16h128c4.4 0 8.4 1.8 11.3 4.7 2.9 2.9 4.7 6.9 4.7 11.3 0 8.8-7.2 16-16 16z m16-64H432c-4.4 0-8.4-1.8-11.3-4.7-2.9-2.9-4.7-6.9-4.7-11.3 0-8.8 7.2-16 16-16h160c4.4 0 8.4 1.8 11.3 4.7 2.9 2.9 4.7 6.9 4.7 11.3 0 8.8-7.2 16-16 16z" p-id="8382" fill="#2c2c2c">
               </path>
             </svg>
-            <div class="go-creator-center">进入创作者中心 →</div>
+            <div class="go-creator-center" @click="handleJumpToCreatorCenter">进入创作者中心 →</div>
           </div>
         </div>
       </div>
@@ -318,6 +318,17 @@ function handleJumpToAi() {
     return
   }
   window.open('/ai', '_blank')
+}
+
+/**
+ * 跳转至创作者中心
+ */
+const handleJumpToCreatorCenter = () => {
+  if (!userInfoStore.isLoggedIn) {
+    router.replace('/login')
+    return
+  }
+  window.open('/creatorCenter', '_blank')
 }
 
 const homePageStore = useHomePageStore()

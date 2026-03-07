@@ -42,6 +42,7 @@ import { getUserPostList } from '@/api/userInfo/homePage';
 import type { UserPostItem } from '@/types/index';
 import { eventBus } from '@/utils/eventBus';
 import { useRoute } from 'vue-router';
+import { pa } from 'element-plus/es/locales.mjs';
 
 const route = useRoute();
 const userId = ref<number>(Number(route.params.userId));
@@ -72,6 +73,7 @@ const loadData = async () => {
       tag: tag.value,
     };
 
+    console.log('当前登录人id', loginUserId, params)
     const response = await getUserPostList(params);
     const result = response.data;
 

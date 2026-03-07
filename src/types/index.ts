@@ -20,6 +20,7 @@ export interface UserInfo {
     postCount: number,
     fanCount: number,
     blogAge: number,
+    exp: number,
     level: number,
     focusCount: number,
     isVip: number
@@ -714,5 +715,51 @@ export interface AIChatDetail {
 }
 
 export type AIChatDetails = AIChatDetail[]
+
+/**
+ * 趋势
+ */
+export interface Trend {
+    type: string,
+    contentTrends: TrendData[]
+}
+
+/**
+ * 粉丝、互动趋势
+ */
+export interface TrendData {
+    date: string,
+    count: number
+}
+
+/**
+ * 内容列表
+ */
+export interface CreatorContentItem {
+    id: number,
+    userId: null,
+    userName: null,
+    avatar: null,
+    title: string,
+    introduction: string,
+    image: string,
+    type: number,
+    postType: number,
+    createTime: string,
+    updateTime: string | null,
+    browseCount: number,
+    likeCount: number,
+    collectCount: number,
+    interestScore: null,
+    commentCount: number
+}
+
+export interface CreatorContentList {
+    records: CreatorContentItem[],
+    total: number,
+    size: number,
+    current: number,
+    pages: number
+}
 
 

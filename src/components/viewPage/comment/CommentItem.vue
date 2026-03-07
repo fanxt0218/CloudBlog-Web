@@ -9,12 +9,15 @@
         <div class="comment-main">
             <div class="comment-header">
                 <span class="username"  @click="jumpToHome(item.userId)">{{ item.userName }}</span>
-                <span class="author" v-if="item.userId === userId">作者</span>
+                <span class="author" v-if="authorId && authorId === item.userId">作者</span>
                 <span class="reply-to" v-if="item.level >= 2 && item.parentCommentId">
                     <svg t="1767972710893" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="16533" width="9" height="9">
                         <path d="M128.7552 496.64c0-56.4224 0.064-112.8512-0.0192-169.2736-0.0896-61.6512-0.384-123.3024-0.4672-184.9536-0.0512-36.704 23.0464-66.6368 58.4448-75.648 20.288-5.1648 39.5456-1.9648 57.6192 8.4672 66.176 38.176 132.3392 76.3712 198.5088 114.5536 138.8032 80.096 277.6 160.1984 416.416 240.2752 21.184 12.2176 34.6304 30.0928 38.8992 54.24 5.728 32.4224-9.0688 63.648-37.5872 80.0512-67.8912 39.0336-135.8336 77.9904-203.7568 116.9664-136.5888 78.3808-273.1648 156.7872-409.792 235.104-27.7184 15.8912-55.68 15.8976-82.5024-1.6128-22.3872-14.6112-34.208-36.1088-34.3488-62.9824-0.4672-89.8112-0.5632-179.616-0.7616-269.4272-0.064-28.5824-0.0128-57.1712-0.0128-85.7536-0.2112-0.0064-0.4288-0.0064-0.64-0.0064z" p-id="16534" fill="#8a8a8a">
                         </path></svg>
-                    <span class="reply-to-user" @click="replyCommentP(item.parentCommentId, item.parentUserName)">&nbsp;&nbsp;{{ item.parentUserName }}</span>
+                    <span class="reply-to-user" @click="replyCommentP(item.parentCommentId, item.parentUserName)">
+                        &nbsp;&nbsp;{{ item.parentUserName }}
+                        <!-- <span class="author" v-if="authorId && authorId === item.userId">作者</span> -->
+                    </span>
                 </span>
                 <span class="time">{{ formatRelativeTime(item.createTime) }}</span>
             </div>
@@ -43,6 +46,7 @@
                 :key="child.commentId"
                 :item="child"
                 :level="level + 1"
+                :author-id="authorId"
                 @load-child="$emit('load-child', $event)"
                 @del-comment="$emit('del-comment', $event)"
                 @reply-comment="$emit('reply-comment', $event)"
@@ -86,6 +90,7 @@ const userId = Number(localStorage.getItem('userId'))
 const props = defineProps<{
     item: any
     level: number
+    authorId: number | null
 }>()
 
 const emit = defineEmits(['load-child', 'del-comment', 'reply-comment'])

@@ -48,6 +48,7 @@ import EditPostPage from '@/views/editorPage/EditPostPage.vue'
 import SearchPage from '@/views/searchPage/index.vue'
 import AiPage from '@/views/aiPage/index.vue'
 import LoginPage from '@/views/loginPage/index.vue'
+import CreatorCenterIndex from '@/views/creatorCenter/index.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -155,6 +156,13 @@ const router = createRouter({
         { path: 'myNewFan', component: MyNewFan },
         { path: 'myLikeAndCollect', component: MyLikeAndCollect }
       ]
+    },
+    /**
+     * 创作者中心
+     */
+    {
+      path: '/creatorCenter',
+      component: CreatorCenterIndex
     },
     /**
      * 他人用户主页

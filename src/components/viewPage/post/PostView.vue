@@ -119,6 +119,7 @@
           v-if="showCommentBar"
           class="comment-bar"
           :content-id="postId"
+          :author-id="authorId"
           :type="0"
         />
       </Transition>

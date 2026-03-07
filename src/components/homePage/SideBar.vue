@@ -89,7 +89,7 @@ const bottomMenus: NavItem[] = [
   { key: 'collect', label: '收藏', icon: icons.collect, path: '/personal/myCollect' },
   { key: 'history', label: '历史', icon: icons.history, path: '/personal/myBrowse' },
   { key: 'vip', label: '会员中心', icon: icons.vip, path: '/vipCenter' },
-  { key: 'create', label: '创作中心', icon: icons.create }
+  { key: 'create', label: '创作中心', icon: icons.create, path: '/creatorCenter' }
 ]
 
 function handleClick(item: NavItem) {

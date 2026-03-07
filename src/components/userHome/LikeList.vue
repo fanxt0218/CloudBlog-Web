@@ -67,6 +67,7 @@ import {ref, onMounted} from 'vue';
 import {getUserLikeList, changeLikeStatus} from '@/api/userInfo/homePage';
 import type {UserLike, UserLikeItem} from '@/types/index';
 import { ElMessage, ElIcon } from 'element-plus';
+import { useUserInfoStore } from '@/stores/userInfo';
 
 // 分页相关数据
 const currentPage = ref(1);
@@ -74,6 +75,7 @@ const pageSize = ref(10);
 const loading = ref(false);
 
 const loginUserId = Number(localStorage.getItem('userId'));
+const userInfoStore = useUserInfoStore();
 
 let likeList = ref<UserLike | null>(null);
 
@@ -81,7 +83,7 @@ const loadUserLikeList = async () => {
     loading.value = true;
     try {
         const param = {
-            userId:Number(localStorage.getItem('userId')),
+            userId:userInfoStore.userId,
             beginTime:null,
             endTime:null,
             pageNum:currentPage.value,

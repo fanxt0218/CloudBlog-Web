@@ -23,6 +23,7 @@
                 <CommentItem
                     :item="item"
                     :level="0"
+                    :author-id="authorId"
                     @load-child="toggleChildComments"
                     @del-comment="toggleDelComment"
                     @reply-comment="replyComment"
@@ -97,6 +98,10 @@ const props = defineProps({
     contentId: {
         type: Number,
         default: 0
+    },
+    authorId: {
+        type: [Number, null],
+        default: null
     },
     type: {
         type: Number,
@@ -343,6 +348,8 @@ onMounted(() => {
 
     // 添加点击空白区域隐藏表情弹窗的事件监听
     document.addEventListener('click', handleClickOutside);
+
+    console.log('作者id', props.authorId)
 })
 
 onUnmounted(() => {

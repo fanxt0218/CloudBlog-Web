@@ -61,6 +61,7 @@ const loadData = async () => {
   try {
     const params = {
       userId: userId.value,
+      loginUserId: null,
       cursor: currentCursor.value,
       size: pageSize.value,
       sortBy: sortBy.value,
