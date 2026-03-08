@@ -33,3 +33,13 @@ export const getContentList = (data: {
 }) => {
     return request.get(`/content/create/getCreateContentList`, { params: data });
 }
+
+/**
+ * 删除内容
+ */
+export const deleteContent = (data: {
+    postId: number,
+    userId: number
+}) => {
+    return request.post(`/content/post/delete`, data);
+}

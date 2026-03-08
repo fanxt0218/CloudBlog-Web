@@ -45,6 +45,10 @@
                 <span>{{ item.collectCount }}</span>
               </div>
             </div>
+            <div class="item-ops">
+                <el-button type="primary" link @click="handleEdit(item)">编辑</el-button>
+                <el-button type="danger" link @click="handleDelete(item)">删除</el-button>
+            </div>
           </div>
         </div>
       </template>
@@ -72,10 +76,11 @@
 <script lang="ts" setup name="ContentList">
 import { ref, onMounted } from 'vue';
 import { Eye, MessageSquare, Heart, Star, Inbox } from 'lucide-vue-next';
-import { getContentList } from '@/api/userInfo/creatorCenter';
+import { getContentList, deleteContent } from '@/api/userInfo/creatorCenter';
 import type { CreatorContentItem, CreatorContentList, ApiResponse } from '@/types';
 import { useUserInfoStore } from '@/stores/userInfo';
 import { useRouter } from 'vue-router';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 const router = useRouter();
 
@@ -136,6 +141,47 @@ const formatDate = (dateStr: string) => {
  */
 const handlePostView = (item: CreatorContentItem) => {
     window.open(`/postView/${item.userId}/${item.id}`, '_blank');
+}
+
+/**
+ * 编辑文章
+ */
+const handleEdit = (item: CreatorContentItem) => {
+    window.open(`/editPost/${item.id}`, '_blank');
+}
+
+/**
+ * 删除文章
+ */
+const handleDelete = async (item: CreatorContentItem) => {
+    try {
+        await ElMessageBox.confirm(
+            '确定要删除该文章吗？删除后不可恢复。',
+            '提示',
+            {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }
+        );
+        
+        const res = await deleteContent({
+            postId: item.id,
+            userId: userInfoStore.userId
+        }) as unknown as ApiResponse<any>;
+
+        if (res.code === 200) {
+            ElMessage.success('删除成功');
+            fetchData();
+        } else {
+            ElMessage.error(res.msg || '删除失败');
+        }
+    } catch (error) {
+        if (error !== 'cancel') {
+            console.error('Delete error:', error);
+            ElMessage.error('操作失败');
+        }
+    }
 }
 
 onMounted(() => {
@@ -242,6 +288,10 @@ onMounted(() => {
 
 .item-right {
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
 }
 
 .stat-group {
@@ -259,6 +309,17 @@ onMounted(() => {
 
 .stat-unit svg {
   color: #bfbfbf;
+}
+
+.item-ops {
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.content-item:hover .item-ops {
+    opacity: 1;
 }
 
 .empty-state {
