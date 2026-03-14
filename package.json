@@ -28,7 +28,7 @@
     "axios": "^1.12.2",
     "echarts": "^6.0.0",
     "element-china-area-data": "^6.1.0",
-    "element-plus": "^2.11.5",
+    "element-plus": "^2.13.5",
     "highlight.js": "^11.11.1",
     "lowlight": "^3.3.0",
     "lucide-vue-next": "^0.556.0",

@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { pa } from 'element-plus/es/locales.mjs';
+// import { pa } from 'element-plus/es/locales.mjs';
 import type { ApiResponse } from '@/types';
 
 /**
@@ -179,4 +179,43 @@ export const getFocusAndFansList = (
   }
 ) => {
   return request.get(`/content/focus/getFocusAndFansList`, { params: data });
+}
+
+/**
+ * 新增分类
+ */
+export const addCategory = (
+  data: {
+    userId: number,
+    categoryName: string,
+    categoryDesc: string,
+    image: string
+  }
+) => {
+  return request.post(`/content/category/addCategory`, data);
+}
+
+/**
+ * 修改分类
+ */
+export const updateCategory = (
+  data: {
+    id: number,
+    categoryName: string,
+    image: string,
+    description: string,
+  }
+) => {
+  return request.post(`/content/category/editCategory`, data);
+}
+
+/**
+ * 删除分类
+ */
+export const deleteCategory = (
+  data: {
+    categoryId: number
+  }
+) => {
+  return request.post(`/content/category/deleteCategory`, {}, { params: data });
 }

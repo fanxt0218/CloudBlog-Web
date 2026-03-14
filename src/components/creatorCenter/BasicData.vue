@@ -79,9 +79,10 @@
           <div class="data-main">
             <span class="data-value">{{ userInfo?.fanCount || 0 }}</span>
           </div>
-          <div :class="['data-trend', yesterdayStats.fans > 0 ? 'up' : 'gray']">
+          <div :class="['data-trend', yesterdayStats.fans > 0 ? 'up' : (yesterdayStats.fans < 0 ? 'down' : 'gray')]">
             <span class="trend-icon" v-if="yesterdayStats.fans > 0">↑</span>
-            <span class="trend-text">昨日 {{ yesterdayStats.fans > 0 ? '+' + yesterdayStats.fans : '无变化' }}</span>
+            <span class="trend-icon" v-else-if="yesterdayStats.fans < 0">↓</span>
+            <span class="trend-text">昨日 {{ yesterdayStats.fans > 0 ? '+' + yesterdayStats.fans : (yesterdayStats.fans < 0 ? yesterdayStats.fans : '无变化') }}</span>
           </div>
         </div>
 
@@ -195,8 +196,17 @@ const yesterdayStats = computed(() => {
     return lastItem ? lastItem.count : 0;
   };
 
+  // 辅助函数：获取增长量（今天 - 昨天）
+  const getGrowthCount = (trend: Trend | undefined | null) => {
+    if (!trend || !trend.contentTrends || trend.contentTrends.length === 0) return 0;
+    if (trend.contentTrends.length === 1) return trend.contentTrends[0]?.count || 0;
+    const lastItem = trend.contentTrends[trend.contentTrends.length - 1];
+    const secondLastItem = trend.contentTrends[trend.contentTrends.length - 2];
+    return (lastItem?.count || 0) - (secondLastItem?.count || 0);
+  };
+
   // 粉丝变化
-  stats.fans = getLastCount(fansGrowthTrend.value);
+  stats.fans = getGrowthCount(fansGrowthTrend.value);
 
   // 收藏变化 (从 interactionTrend 中筛选类型为 '被收藏' 的)
   const collectTrend = interactionTrend.value?.find(t => t.type === '被收藏');
@@ -390,6 +400,10 @@ onMounted(() => {
 
 .data-trend.up {
   color: #f56c6c;
+}
+
+.data-trend.down {
+  color: #67c23a;
 }
 
 .data-trend.gray {

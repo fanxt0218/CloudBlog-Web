@@ -43,11 +43,82 @@
       <p class="intro">个人简介：{{ introduction }}</p>
     </div>
 
-    <!-- 关注按钮 -->
-    <button @click="handleFocusUser(0)" class="edit-btn no-active" v-if="!isFocused">关注</button>
-    <button @click="handleFocusUser(1)" class="edit-btn active" v-else>已关注</button>
-    <!-- 私信按钮 -->
-    <button @click="handlePrivateMessage" class="edit-btn">私信</button>
+    <!-- 操作区域 -->
+    <div class="action-area">
+      <!-- 关注按钮 -->
+      <button @click="handleFocusUser(0)" class="edit-btn no-active" v-if="!isFocused">关注</button>
+      <button @click="handleFocusUser(1)" class="edit-btn active" v-else>已关注</button>
+      <!-- 私信按钮 -->
+      <button @click="handlePrivateMessage" class="edit-btn">私信</button>
+      
+      <!-- 举报功能 -->
+      <el-dropdown trigger="hover" placement="bottom-end">
+        <span class="more-icon-wrapper">
+          <MoreVertical :size="20" class="more-icon" />
+        </span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="reportDialogVisible = true">
+              <span class="report-text">举报</span>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
+
+    <!-- 举报弹窗 -->
+    <el-dialog
+      v-model="reportDialogVisible"
+      title="举报用户"
+      width="500px"
+      @closed="resetReportForm"
+      append-to-body
+    >
+      <div class="report-container">
+        <el-form label-position="top">
+          <el-form-item label="举报原因" required>
+            <el-input
+              v-model="reportReason"
+              type="textarea"
+              :rows="4"
+              placeholder="请详细描述举报原因（必填，限制255字符）..."
+              maxlength="255"
+              show-word-limit
+            />
+          </el-form-item>
+          
+          <el-form-item label="相关图片（可选）">
+            <el-upload
+              class="report-uploader"
+              action="#"
+              :auto-upload="false"
+              :on-change="handleFileChange"
+              :on-remove="handleFileRemove"
+              :file-list="fileList"
+              list-type="picture-card"
+              :limit="1"
+              :on-exceed="handleExceed"
+              accept="image/*"
+            >
+              <el-icon><Plus /></el-icon>
+              <template #tip>
+                <div class="el-upload__tip">
+                  支持上传一张图片作为附件（可选）
+                </div>
+              </template>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+      </div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="reportDialogVisible = false">取消</el-button>
+          <el-button type="danger" :loading="reportLoading" @click="handleReportSubmit">
+            提交举报
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -61,6 +132,10 @@ import { useUserHomeStore } from '@/stores/userHome';
 import { ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
 import { useMessageStore } from '@/stores/messageStore';
+import { MoreVertical } from 'lucide-vue-next';
+import { Plus } from '@element-plus/icons-vue';
+import { reportContent } from '@/api/index/workOrder';
+import { uploadImage } from '@/api/create/index';
 
 // 路由实例
 const router = useRouter();
@@ -88,6 +163,89 @@ let level = ref(1);
 
 let isFocused = ref(false);
 
+// 举报功能相关
+const reportDialogVisible = ref(false);
+const reportReason = ref('');
+const reportLoading = ref(false);
+const fileList = ref<any[]>([]);
+
+/**
+ * 处理文件变化
+ */
+const handleFileChange = (file: any) => {
+  fileList.value = [file];
+}
+
+/**
+ * 处理文件移除
+ */
+const handleFileRemove = () => {
+  fileList.value = [];
+}
+
+/**
+ * 处理文件超出限制
+ */
+const handleExceed = () => {
+  ElMessage.warning('只能上传一张图片作为附件');
+}
+
+/**
+ * 重置举报表单
+ */
+const resetReportForm = () => {
+  reportReason.value = '';
+  fileList.value = [];
+}
+
+/**
+ * 提交举报
+ */
+const handleReportSubmit = async () => {
+  if (!reportReason.value.trim()) {
+    ElMessage.warning('请输入举报原因');
+    return;
+  }
+  
+  reportLoading.value = true;
+  try {
+    let filePath = '';
+    
+    // 如果有图片，先上传
+    if (fileList.value.length > 0 && fileList.value[0].raw) {
+      const formData = new FormData();
+      formData.append('file', fileList.value[0].raw);
+      const uploadRes = (await uploadImage(formData)) as any;
+      if (uploadRes.code === 200) {
+        filePath = uploadRes.data;
+      } else {
+        ElMessage.error(uploadRes.message || '图片上传失败');
+        reportLoading.value = false;
+        return;
+      }
+    }
+
+    const res = (await reportContent({
+      targetType: 3, // 目标类型：用户
+      targetId: userId,
+      reason: reportReason.value.trim(),
+      filePath: filePath || undefined
+    })) as any;
+
+    if (res.code === 200) {
+      ElMessage.success('举报成功，我们将尽快处理');
+      reportDialogVisible.value = false;
+    } else {
+      ElMessage.error(res.message || '提交失败');
+    }
+  } catch (error) {
+    console.error('Submit report error:', error);
+    ElMessage.error('系统繁忙，请稍后再试');
+  } finally {
+    reportLoading.value = false;
+  }
+}
+
 /**
  * 处理私信按钮点击
  */
@@ -106,7 +264,8 @@ const sendUserNameToParent = () => {
 }
 
 onMounted(async()=>{
-    await getUserInfo(userId).then((response)=>{
+    await getUserInfo(userId).then((res : any)=>{
+        const response = res;
         console.log('发送了请求', response);
         visitCount.value = response.data.visits;
         originalCount.value = response.data.postCount;
@@ -139,7 +298,8 @@ function handleFocusUser(status:number) {
         focusUserId: userId,
         status: status,
         source: '用户主页'
-    }).then((response)=>{
+    }).then((res : any)=>{
+        const response = res;
         console.log('关注成功', response);
         if (status == 0 && response.code == 200) {
             ElMessage.success('关注成功');
@@ -158,7 +318,8 @@ function handleGetFocusStatus() {
     getFocusStatus({
         userId: Number(localStorage.getItem('userId')),
         focusUserId: userId,
-    }).then((response)=>{
+    }).then((res : any)=>{
+        const response = res;
         if (response.data) {
             isFocused.value = true;
         } else {
@@ -327,7 +488,6 @@ const formatVisitCount = (count: number): string => {
 }
 
 .edit-btn {
-  margin-left: auto;
   padding: 4px 10px; /* 缩减按钮内边距 */
   border: 0.8px solid #5a5a5a;
   color: #5a5a5a;
@@ -345,6 +505,54 @@ const formatVisitCount = (count: number): string => {
     /* background-color: rgb(243, 183, 55); */
     color: #b4b4b4;
     border-color: rgb(188, 188, 188);
+}
+
+.action-area {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.more-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s;
+}
+
+.more-icon-wrapper:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.report-text {
+  color: #ef4444;
+}
+
+.report-container {
+  padding: 0 10px;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+:deep(.el-upload--picture-card) {
+  width: 100px;
+  height: 100px;
+}
+
+:deep(.el-upload-list--picture-card .el-upload-list__item) {
+  width: 100px;
+  height: 100px;
 }
 
 .no-active {
