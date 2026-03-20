@@ -762,4 +762,31 @@ export interface CreatorContentList {
     pages: number
 }
 
+/**
+ * 工单列表
+ */
+export interface WorkOrder {
+    id: number,
+    orderId: string,
+    userId: number,
+    userName: string,
+    targetId: number,
+    targetType: number,
+    orderType: number,
+    reason: string,
+    filePath: string,
+    status: number,
+    createTime: string,
+    updateTime: string,
+    handleReason: string
+}
+
+export interface WorkOrderList {
+    records: WorkOrder[],
+    total: number,
+    size: number,
+    current: number,
+    pages: number
+}
+
 

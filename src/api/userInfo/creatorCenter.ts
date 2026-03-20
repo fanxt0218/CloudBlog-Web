@@ -43,3 +43,14 @@ export const deleteContent = (data: {
 }) => {
     return request.post(`/content/post/delete`, data);
 }
+
+/**
+ * 获取工单列表
+ */
+export const queryWorkOrderList = (params: {
+    userId: number,
+    pageNum?: number,
+    pageSize?: number
+}) => {
+    return request.get(`/workOrder/query`, { params: params })
+}

@@ -45,7 +45,7 @@
             />
           </div>
         </div>
-        <el-affix position="bottom" :offset="20">
+        <el-affix position="bottom" :offset="0">
         <div class="footer-info">
             <div class="author-area">
                 <div class="avatar">

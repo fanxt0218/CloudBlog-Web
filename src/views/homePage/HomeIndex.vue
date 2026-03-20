@@ -22,7 +22,7 @@ function handleTagChange(tagId: number) {
 }
 
 onMounted(() => {
-    document.title = 'CloudBlog_智能云博客平台_已接入Qwen'
+    document.title = 'CloudBlog_智能体云博客平台_已接入Gemini3'
 })
 </script>
 <style scoped>

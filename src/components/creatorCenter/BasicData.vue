@@ -30,7 +30,7 @@
       </div>
       <div class="user-actions">
         <!-- 模拟图片右侧的四个小图标，使用 Lucide 图标库 -->
-        <div class="icon-item">
+        <div class="icon-item" @click="handleWorkOrderClick" title="我的工单">
           <Contact :size="20" />
         </div>
         <div class="icon-item">
@@ -44,6 +44,9 @@
         </div>
       </div>
     </div>
+
+    <!-- 工单弹窗 -->
+    <WorkOrderDialog ref="workOrderDialogRef" :userId="userId" />
 
     <!-- 数据概览卡片 -->
     <div class="card data-overview-card">
@@ -123,10 +126,12 @@
 import { ref, onMounted, computed } from 'vue';
 import { Contact, Building2, Leaf, Box } from 'lucide-vue-next';
 import DataTrend from './DataTrend.vue';
+import WorkOrderDialog from './WorkOrderDialog.vue';
 import { getUserInfo, getUserAchievement } from '@/api/userInfo/homePage';
 import { getInteractionTrend, getFansGrowthTrend } from '@/api/userInfo/creatorCenter';
 import type { UserInfo, UserAchievement, ApiResponse, Trend } from '@/types';
 
+const workOrderDialogRef = ref<any>(null);
 const userInfo = ref<UserInfo | null>(null);
 const achievement = ref<UserAchievement | null>(null);
 const interactionTrend = ref<Trend[] | null>(null);
@@ -135,6 +140,10 @@ const userId = Number(localStorage.getItem('userId')) || 1;
 
 const formatNumber = (num: number) => {
   return num?.toLocaleString() || '0';
+};
+
+const handleWorkOrderClick = () => {
+  workOrderDialogRef.value?.open();
 };
 
 const fetchData = async () => {

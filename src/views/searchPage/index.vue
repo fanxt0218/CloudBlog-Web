@@ -7,7 +7,7 @@
                 <SearchResultList v-else @searchResultCount="handleSearchResultCount"  />
                 <div class="right-area">
                     <HotSearch />
-                    <HotSearch />
+                    <!-- <HotSearch /> -->
                 </div>
             </div>
         </div>

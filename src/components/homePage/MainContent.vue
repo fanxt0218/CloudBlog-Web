@@ -312,6 +312,11 @@ onUnmounted(() => {
   font-size: 14px;
   margin-bottom: 10px;
   line-height: 1.5;
+  /* 最多两行 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* 元信息行 */

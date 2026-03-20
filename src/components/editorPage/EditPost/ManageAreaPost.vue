@@ -112,7 +112,7 @@ d:\CloudBlog-Web\src\components\editorPage\ManageArea.vue
       </span>
       <div class="item-right">
           <el-radio v-model="contentType" value="0">文章/博客</el-radio>
-          <el-radio v-model="contentType" disabled value="1">
+          <el-radio v-model="contentType" value="1">
             资讯
           </el-radio>
       </div>

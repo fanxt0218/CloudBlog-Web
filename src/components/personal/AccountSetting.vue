@@ -59,6 +59,7 @@ import { getAccountSettings, deleteAccount } from '@/api/userInfo/personal'
 import type { AccountSetting } from '@/types/index'
 import AccountEditDialog from './AccountEditDialog.vue'
 import { useRouter } from 'vue-router'
+import { useUserInfoStore } from '@/stores/userInfo'
 
 let accountSetting = ref<AccountSetting | null>(null)
 const editDialog = ref()
@@ -103,6 +104,7 @@ const handleDeleteAccount = async () => {
         ElMessage.success('注销成功')
         localStorage.removeItem('userId')
         localStorage.removeItem('token')
+        useUserInfoStore().logout()
         router.replace('/login')
       }
     })
