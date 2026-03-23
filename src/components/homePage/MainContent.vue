@@ -2,8 +2,8 @@
   <div class="main-content">
     <div class="revolving-lantern">
       <el-carousel height="170px" style="border-radius: 12px;" indicator-position="none">
-        <el-carousel-item v-for="item in lanternImages" :key="item">
-          <img :src="item" class="content-image" />
+        <el-carousel-item v-for="item in carouselImages" :key="item">
+          <img :src="`/api${item.contentValue}`" class="content-image" />
         </el-carousel-item>
       </el-carousel>
     </div>
@@ -82,15 +82,16 @@ import type { IndexPostList, IndexPost } from '@/types/index'
 import { de, lo, pa } from 'element-plus/es/locales.mjs';
 import router from '@/router';
 import { useUserInfoStore } from '@/stores/userInfo';
+import { getWebsiteComponentInfo } from '@/utils/websiteComponent';
+import type { WebsiteComponentDefine } from '@/types';
 
 const routerInstance = router;
 const userInfoStore = useUserInfoStore();
 
 let postList = ref<IndexPostList>([]);
 
-let lanternImages = ref([
-  "/api/profile/system/index-revolving-lantern/lantern"+Math.floor(Math.random()*3+1)+".png",
-])
+// 轮播图 从其中随机取出一张展示
+let carouselImages = ref<WebsiteComponentDefine[]>([])
 
 const scrollContainer = ref<HTMLDivElement | null>(null);
 const currentCursor = ref<string | null>(null);
@@ -184,6 +185,22 @@ const handleJumpToPostDetail = (post: IndexPost) => {
     window.open(`/postView/${post.userId}/${post.id}`, '_blank');
 }
 
+/**
+ * 加载轮播图
+ */
+async function loadCarouselImages() {
+  try {
+    const res = await getWebsiteComponentInfo('HOME', 'carousel');
+    if (res && res.length > 0) {
+      // 从中随机取出一张展示
+      const randomIndex = Math.floor(Math.random() * res.length);
+      carouselImages.value = [res[randomIndex]]
+    }
+  } catch (error) {
+    console.error('加载轮播图失败:', error);
+  }
+}
+
 watch(() => props.selectedTagId, (newVal, oldVal) => {
   if (newVal !== oldVal) {
     postList.value = [];
@@ -195,6 +212,7 @@ watch(() => props.selectedTagId, (newVal, oldVal) => {
 
 onMounted(() => {
     loadIndexPostList();
+    loadCarouselImages();
     window.addEventListener("scroll", handleScroll);
 })
 

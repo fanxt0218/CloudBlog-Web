@@ -1,5 +1,5 @@
 <template>
-    <div class="view-page">
+    <div class="view-page" :style="pageStyle">
         <div class="page-container">
             <!-- 左侧作者信息 -->
             <div class="left-column">
@@ -49,13 +49,15 @@
 import LeftAuthorInfo from '@/components/viewPage/post/leftAuthorInfo.vue';
 import HotPostBar from '@/components/viewPage/post/HotPostBar.vue';
 import PostView from '@/components/viewPage/post/PostView.vue';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import PostPermissionOverlay from '@/components/viewPage/post/overlay/PostPermissionOverlay.vue';
 import { addPostViewCount } from '@/api/index/viewPage';
 import Panel from '@/components/viewPage/post/Panel.vue';
 import RelatedSearch from '@/components/viewPage/post/RelatedSearch.vue';
+import { getWebsiteComponentInfo } from '@/utils/websiteComponent';
+import type { WebsiteComponentDefine } from '@/types';
 
 const route = useRoute();
 const authorId = ref(Number(route.params.authorId));
@@ -71,6 +73,21 @@ const postType = ref(0);
 
 // 拦截显示类型
 const displayType = ref<number | null>(null);
+
+const bgUrl = ref('');
+
+const DEFAULT_BG = '';
+
+const pageStyle = computed(() => {
+  if (!bgUrl.value) return {}; // 如果没有图片，就不加背景
+  return {
+    backgroundImage: `url(${bgUrl.value})`,
+    backgroundAttachment: 'fixed',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  }
+})
 
 // 设置文章标题
 const setPostName = (name: string) => {
@@ -170,9 +187,21 @@ const addBrowseCount = (data: {postId: number, userId: number, contentType: numb
   })
 }
 
-onMounted(() => {
+onMounted(async () => {
   // console.log('设置文章标题为:', postName.value);
   // setPostName(postName.value);
+  try {
+    const res = await getWebsiteComponentInfo('VIEW', 'viewpage_bg');
+    if (res && res.length > 0) {
+      const url = res[0].contentValue;
+      bgUrl.value = url.startsWith('http') ? url : `/api${url}`;
+    } else {
+      bgUrl.value = DEFAULT_BG;
+    }
+  } catch (e) {
+    console.error('Failed to load login background', e);
+    bgUrl.value = DEFAULT_BG; // 出错无背景图
+  }
 });
 
 </script>
@@ -180,9 +209,13 @@ onMounted(() => {
 .view-page {
   width: 100%;
   min-height: 100vh;
-  background: #f5f6f7;
+  background-color: #f5f6f7;
   display: flex;
   justify-content: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 .page-container {

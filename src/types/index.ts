@@ -789,4 +789,26 @@ export interface WorkOrderList {
     pages: number
 }
 
-
+/**
+ * 网站组件定义
+ */
+export interface WebsiteComponentDefine {
+    id: number,
+    contentType: string,
+    contentKey: string,
+    contentValue: string,
+    contentFormat: string,
+    category: string,
+    groupName: string,
+    title: string,
+    description: string,
+    sortOrder: number,
+    attributes: string,
+    attributesMap: any,
+    status: number,
+    isPublic: number,
+    createdBy: string,
+    updatedBy: string,
+    createTime: string,
+    updateTime: string
+}

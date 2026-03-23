@@ -11,17 +11,17 @@
                     v-for="item in block" 
                     :key="item.id" 
                     class="card"
-                    @click="handleJumpToToolDetail(item.link)"
+                    @click="handleJumpToToolDetail(item.attributes.url)"
                   >
                     <div class="left-icon">
-                      <img :src="item.icon" />
+                      <img :src="`/api${item.contentValue}`" />
                     </div>
                     <div class="right-info">
-                      <div class="title">{{ item.title }}</div>
-                      <div class="desc">{{ item.desc }}</div>
+                      <div class="title">{{ item.attributes.title }}</div>
+                      <div class="desc">{{ item.attributes.desc }}</div>
                       <div class="extra">
-                        <span class="tag">{{ item.tag }}</span>
-                        <span class="hot">🔥 {{ item.hot }}</span>
+                        <span class="tag">{{ item.attributes.tag }}</span>
+                        <span class="hot">🔥 {{ item.attributes.hotNum }}</span>
                       </div>
                     </div>
                     <div class="more-btn">查看详情 →</div>
@@ -34,23 +34,27 @@
 </template>
 <script setup lang="ts" name="RecommendTools">
 import { ref, onMounted } from 'vue'
+import { getWebsiteComponentInfo } from '@/utils/websiteComponent';
+import type { WebsiteComponentDefine } from '@/types';
 
-const blocks = ref([
-  // 轮播页 1
-  [
-    { id: 1, icon: '/api/profile/system/index-recommend-tools/Github.png', title: 'GitHub', desc: '开源项目托管平台', tag: '开源', hot: '50.8K', link: 'https://github.com/' },
-    { id: 2, icon: '/api/profile/system/index-recommend-tools/sora.png', title: 'Sora', desc: 'OpenAI旗下视频生成平台', tag: 'AIGC', hot: '50.0K', link: 'https://openai.com/sora' },
-    { id: 3, icon: '/api/profile/system/index-recommend-tools/huggingface.png', title: 'Hugging Face', desc: '自然语言处理模型平台', tag: '开源', hot: '39.5K', link: 'https://huggingface.co/' },
-    { id: 4, icon: '/api/profile/system/index-recommend-tools/jimeng.png', title: '即梦AI', desc: '一站式AI创作平台', tag: 'AIGC', hot: '21.8K', link: 'https://jimeng.aigc.cc/' }
-  ],
-  // 轮播页 2
-  [
-    { id: 5, icon: '/api/profile/system/index-recommend-tools/OpenAI.png', title: 'OpenAI', desc: 'OpenAI旗下ChatGpt大模型', tag: 'AI', hot: '18.2K', link: 'https://openai.com/' },
-    { id: 6, icon: '/api/profile/system/index-recommend-tools/Qwen.png', title: 'Qwen', desc: '阿里旗下同通义大模型', tag: 'AI', hot: '21.7K', link: 'https://tongyi.aliyun.com/' },
-    { id: 7, icon: '/api/profile/system/index-recommend-tools/Gemini.png', title: 'Gemini', desc: '谷歌旗下大模型', tag: 'AI', hot: '33.2K', link: 'https://gemini.google.com/' },
-    { id: 8, icon: '/api/profile/system/index-recommend-tools/DeepSeek.png', title: 'DeepSeek', desc: '宇树科技旗下大模型', tag: 'AI', hot: '44.1K', link: 'https://deepseek.com/' }
-  ],
-])
+const blocks = ref<any[][]>([])
+
+// const blocks = ref([
+//   // 轮播页 1
+//   [
+//     { id: 1, icon: '/api/profile/system/index-recommend-tools/Github.png', title: 'GitHub', desc: '开源项目托管平台', tag: '开源', hot: '50.8K', link: 'https://github.com/' },
+//     { id: 2, icon: '/api/profile/system/index-recommend-tools/sora.png', title: 'Sora', desc: 'OpenAI旗下视频生成平台', tag: 'AIGC', hot: '50.0K', link: 'https://openai.com/sora' },
+//     { id: 3, icon: '/api/profile/system/index-recommend-tools/huggingface.png', title: 'Hugging Face', desc: '自然语言处理模型平台', tag: '开源', hot: '39.5K', link: 'https://huggingface.co/' },
+//     { id: 4, icon: '/api/profile/system/index-recommend-tools/jimeng.png', title: '即梦AI', desc: '一站式AI创作平台', tag: 'AIGC', hot: '21.8K', link: 'https://jimeng.aigc.cc/' }
+//   ],
+//   // 轮播页 2
+//   [
+//     { id: 5, icon: '/api/profile/system/index-recommend-tools/OpenAI.png', title: 'OpenAI', desc: 'OpenAI旗下ChatGpt大模型', tag: 'AI', hot: '18.2K', link: 'https://openai.com/' },
+//     { id: 6, icon: '/api/profile/system/index-recommend-tools/Qwen.png', title: 'Qwen', desc: '阿里旗下同通义大模型', tag: 'AI', hot: '21.7K', link: 'https://tongyi.aliyun.com/' },
+//     { id: 7, icon: '/api/profile/system/index-recommend-tools/Gemini.png', title: 'Gemini', desc: '谷歌旗下大模型', tag: 'AI', hot: '33.2K', link: 'https://gemini.google.com/' },
+//     { id: 8, icon: '/api/profile/system/index-recommend-tools/DeepSeek.png', title: 'DeepSeek', desc: '宇树科技旗下大模型', tag: 'AI', hot: '44.1K', link: 'https://deepseek.com/' }
+//   ],
+// ])
 
 /**
  * 处理跳转工具详情页
@@ -59,6 +63,44 @@ const blocks = ref([
 const handleJumpToToolDetail = (link: string) => {
     window.open(link, '_blank')
 }
+
+/**
+ * 加载推荐工具
+ */
+async function loadRecommendTools() {
+  try {
+    const res = await getWebsiteComponentInfo('HOME', 'recommend_tool');
+    console.log('res', res)
+    if (res && res.length > 0) {
+      // 1. 先解析所有项的 attributes
+      const parsedItems = (res as any[]).map(item => {
+        if (typeof item.attributes === 'string' && item.attributes) {
+          try {
+            item.attributes = JSON.parse(item.attributes);
+          } catch (e) {
+            console.error('解析 attributes 失败:', e, item.attributes);
+            item.attributes = {};
+          }
+        }
+        return item;
+      });
+
+      // 2. 每四个分为一组
+      const temp = []
+      for (let i = 0; i < parsedItems.length; i += 4) {
+        temp.push(parsedItems.slice(i, i + 4))
+      }
+      blocks.value = temp
+    }
+    console.log('blocks.value', blocks.value)
+  } catch (error) {
+    console.error('加载推荐工具失败:', error);
+  }
+}
+
+onMounted(() => {
+    loadRecommendTools();
+})
 </script>
 <style scoped>
 .main-news-content {

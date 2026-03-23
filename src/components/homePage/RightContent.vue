@@ -3,7 +3,7 @@
         <div class="advertisement">
             <el-carousel trigger="click" height="370px" style="border-radius: 12px;" interval="2000">
               <el-carousel-item v-for="item in advertisements" :key="item">
-                <img :src="item" alt="advertisement" class="carousel-image"/>
+                <img :src="`/api${item.contentValue}`" alt="advertisement" class="carousel-image"/>
               </el-carousel-item>
             </el-carousel>
         </div>
@@ -32,17 +32,13 @@ import { ref, onMounted } from 'vue'
 import { getRecommendUsers } from '@/api/index/indexPage'
 import type { RecommendUsers } from '@/types/index'
 import { useRouter } from 'vue-router'
+import { getWebsiteComponentInfo } from '@/utils/websiteComponent';
+import type { WebsiteComponentDefine } from '@/types';
 
 const recommendUsers = ref<RecommendUsers>([])
 const router = useRouter()
 
-let advertisements = ref([
-  // "/api/profile/system/index-advertisement-lantern/lantern1.png",
-  "/api/profile/system/index-advertisement-lantern/lantern2.png",
-  "/api/profile/system/index-advertisement-lantern/lantern3.png",
-  "/api/profile/system/index-advertisement-lantern/lantern4.png",
-  "/api/profile/system/index-advertisement-lantern/lantern5.png",
-])
+let advertisements = ref<WebsiteComponentDefine[]>([])
 
 /**
  * 处理跳转用户主页
@@ -50,6 +46,20 @@ let advertisements = ref([
  */
 const handleJumpToUserProfile = (userId: number) => {
     router.push(`/otherUserHome/${userId}`)
+}
+
+/**
+ * 加载广告轮播图
+ */
+async function loadAdvertisements() {
+  try {
+    const res = await getWebsiteComponentInfo('HOME', 'advertise');
+    if (res && res.length > 0) {
+      advertisements.value = res
+    }
+  } catch (error) {
+    console.error('加载广告轮播图失败:', error);
+  }
 }
 
 
@@ -61,6 +71,7 @@ onMounted(() => {
     }).then(res => {
         recommendUsers.value = res.data.content || []
     })
+    loadAdvertisements()
 })
 </script>
 <style scoped>

@@ -48,7 +48,7 @@
           />
         </el-form-item>
         
-        <div class="form-actions">
+        <div class="form-actions" @click="forgetPass()">
           <a href="#" class="forgot-link">忘记密码</a>
         </div>
 
@@ -189,6 +189,7 @@ import { generateCode, verifyCode } from '@/api/userInfo/personal'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { useUserInfoStore } from '@/stores/userInfo'
+import { submitWorkOrder } from '@/api/index/workOrder'
 
 const router = useRouter()
 const userInfoStore = useUserInfoStore()
@@ -404,6 +405,28 @@ const onLoginSuccess = (data: any) => {
   setTimeout(() => {
     window.location.reload()
   }, 500)
+}
+
+/**
+ * 忘记密码
+ */
+const forgetPass = async () => {
+  if(!loginForm.target) {
+    ElMessage.warning('请先填写手机号')
+    return;
+  }
+  let data = {
+    orderId: loginForm.target, // 暂时使用这个字段
+    targetType: 3,
+    orderType: 3,
+    reason: "登录时忘记密码，申请重置" 
+  }
+  const res : any = await submitWorkOrder(data)
+  if (res.code === 200) {
+    ElMessage.success("提交成功，请于1-3个工作日后尝试登录")
+  } else {
+    ElMessage.error(res.msg)
+  }
 }
 
 onUnmounted(() => {
