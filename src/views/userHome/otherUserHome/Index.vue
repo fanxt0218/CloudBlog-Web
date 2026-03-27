@@ -1,26 +1,28 @@
 <template>
-    <div class="card">
-        <div class="user">
-            <OtherUserInfo :userId="userId" @sendUserName="handleSendUserName"/>
-        </div>
-        <!-- 创建一个flex容器，包含左侧和右侧内容 -->
-        <div class="main-layout">
-            <!-- 左侧区域 -->
-            <div class="left-section">
-                <div class="achievement">
-                    <OtherUserAchievement :userId="userId" />
-                </div>
-                <div class="category">
-                    <OtherUserCategoryList :userId="userId"/>
-                </div>
-                <div class="tag">
-                    <OtherUserTag :userId="userId"/>
-                </div>
+    <div class="user-home-container" :style="pageStyle">
+        <div class="card">
+            <div class="user">
+                <OtherUserInfo :userId="userId" @sendUserName="handleSendUserName"/>
             </div>
-            <!-- 右侧区域 -->
-            <div class="right-section">
-                <div class="content">
-                    <OtherUserContent :userId="userId"></OtherUserContent>
+            <!-- 创建一个flex容器，包含左侧和右侧内容 -->
+            <div class="main-layout">
+                <!-- 左侧区域 -->
+                <div class="left-section">
+                    <div class="achievement">
+                        <OtherUserAchievement :userId="userId" />
+                    </div>
+                    <div class="category">
+                        <OtherUserCategoryList :userId="userId"/>
+                    </div>
+                    <div class="tag">
+                        <OtherUserTag :userId="userId"/>
+                    </div>
+                </div>
+                <!-- 右侧区域 -->
+                <div class="right-section">
+                    <div class="content">
+                        <OtherUserContent :userId="userId"></OtherUserContent>
+                    </div>
                 </div>
             </div>
         </div>
@@ -34,13 +36,19 @@ import OtherUserTag from '@/components/userHome/otherUserHome/OtherUserTag.vue';
 import OtherUserContent from '@/components/userHome/otherUserHome/OtherUserContent.vue';
 import OtherUserCategoryList from '@/components/userHome/otherUserHome/OtherUserCategoryList.vue';
 
-import { ref, onMounted, watchEffect, watch } from 'vue';
+import { ref, onMounted, watchEffect, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
+import { getWebsiteComponents } from '@/api/index/website';
+import type { WebsiteComponentDefine } from '@/types/index'
 
 const router = useRouter();
 const route = useRoute();
 const userId = Number(route.params.userId);
+
+let profileBgInfo = ref<WebsiteComponentDefine[] | []>([])
+
+let bgUrl = ref('')
 
 // 左侧区域、右侧区域、头部组件的DOM引用
 const leftSectionRef = ref<HTMLElement | null>(null);
@@ -70,6 +78,31 @@ const updateRightHeight = () => {
 // 定义一个响应式变量来存储用户名
 const userName = ref('');
 
+const pageStyle = computed(() => {
+  if (!bgUrl.value) return {}; // 如果没有图片，就不加背景
+  return {
+    backgroundImage: `url(${bgUrl.value})`,
+    backgroundAttachment: 'fixed',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  }
+})
+
+/**
+ * 获取用户背景图片
+ */
+const getProfileBgInfo = async () => {
+  const res : any = await getWebsiteComponents({
+    category: 'USER',
+    contentType: 'profile_bg'
+  })
+  if (res.code === 200) {
+    profileBgInfo.value = res.data
+    bgUrl.value = `/api${res.data[0]?.contentValue}`
+  }
+}
+
 /**
  * 处理从子组件发送的用户名
  * @param name 子组件发送的用户名
@@ -95,6 +128,7 @@ watch(userName, (newUserName) => {
 
 // 初始化时计算高度，监听窗口resize和左侧内容变化
 onMounted(() => {
+  getProfileBgInfo()
   updateRightHeight();
   window.addEventListener('resize', updateRightHeight);
 
@@ -111,14 +145,21 @@ watchEffect(() => {
 });
 </script>
 <style scoped>
+.user-home-container {
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 /* 根容器：使用相对宽度+最小宽度，避免过窄 */
 .card {
   width: 60%;
   max-width: 1200px;
   min-width: 320px;
   margin: 0 auto;
-  margin-top: 2rem;
-  padding: 0 1rem;
+  padding: 2rem 1rem;
   /* 确保卡片不限制内部高度 */
   box-sizing: border-box;
 }

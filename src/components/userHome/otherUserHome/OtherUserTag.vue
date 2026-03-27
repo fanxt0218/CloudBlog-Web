@@ -39,6 +39,7 @@ onMounted(()=>{
     width: 86%;
     /* 移除固定高度，改为自动高度 */
     min-height: 233px;
+    background-color: #ffffff;
 }
 .title-content {
     display: flex;

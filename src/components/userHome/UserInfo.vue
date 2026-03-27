@@ -149,6 +149,7 @@ const formatVisitCount = (count: number): string => {
   border-radius: 6px;
   padding: 12px; /* 缩减内边距 */
   gap: 12px; /* 缩减元素间距 */
+  background-color: #ffffff;
 }
 
 .avatar-area {

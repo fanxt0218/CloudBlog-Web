@@ -1,26 +1,28 @@
 <template>
-    <div class="card">
-        <div class="user">
-            <UserInfo />
-        </div>
-        <!-- 创建一个flex容器，包含左侧和右侧内容 -->
-        <div class="main-layout">
-            <!-- 左侧区域 -->
-            <div class="left-section">
-                <div class="achievement">
-                    <UserAchievement/>
-                </div>
-                <div class="category">
-                    <UserCategory/>
-                </div>
-                <div class="tag">
-                    <UserTag/>
-                </div>
+    <div class="user-home-container" :style="pageStyle">
+        <div class="card">
+            <div class="user">
+                <UserInfo />
             </div>
-            <!-- 右侧区域 -->
-            <div class="right-section">
-                <div class="content">
-                    <UserContent ></UserContent>
+            <!-- 创建一个flex容器，包含左侧和右侧内容 -->
+            <div class="main-layout">
+                <!-- 左侧区域 -->
+                <div class="left-section">
+                    <div class="achievement">
+                        <UserAchievement/>
+                    </div>
+                    <div class="category">
+                        <UserCategory/>
+                    </div>
+                    <div class="tag">
+                        <UserTag/>
+                    </div>
+                </div>
+                <!-- 右侧区域 -->
+                <div class="right-section">
+                    <div class="content">
+                        <UserContent ></UserContent>
+                    </div>
                 </div>
             </div>
         </div>
@@ -34,8 +36,10 @@ import UserTag from '@/components/userHome/UserTag.vue';
 import UserContent from '@/components/userHome/UserContent.vue';
 import UserCategory from '@/components/userHome/UserCategory.vue';
 import { useUserInfoStore } from '@/stores/userInfo';
+import { getWebsiteComponents } from '@/api/index/website';
+import type { WebsiteComponentDefine } from '@/types/index'
 
-import { ref, onMounted, watchEffect, watch } from 'vue';
+import { ref, onMounted, watchEffect, watch, computed } from 'vue';
 import { use } from 'echarts';
 
 let currentUserName = ref('CloudBlog 用户');
@@ -44,6 +48,10 @@ let currentUserName = ref('CloudBlog 用户');
 const leftSectionRef = ref<HTMLElement | null>(null);
 const rightSectionRef = ref<HTMLElement | null>(null);
 const headRef = ref<HTMLElement | null>(null);
+
+let profileBgInfo = ref<WebsiteComponentDefine[] | []>([])
+
+let bgUrl = ref('')
 
 // 动态计算右侧高度：与左侧等高，且距离底部10px
 const updateRightHeight = () => {
@@ -65,8 +73,34 @@ const updateRightHeight = () => {
   rightSectionRef.value.style.height = `${rightHeight}px`;
 };
 
+const pageStyle = computed(() => {
+  if (!bgUrl.value) return {}; // 如果没有图片，就不加背景
+  return {
+    backgroundImage: `url(${bgUrl.value})`,
+    backgroundAttachment: 'fixed',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  }
+})
+
+/**
+ * 获取用户背景图片
+ */
+const getProfileBgInfo = async () => {
+  const res : any = await getWebsiteComponents({
+    category: 'USER',
+    contentType: 'profile_bg'
+  })
+  if (res.code === 200) {
+    profileBgInfo.value = res.data
+    bgUrl.value = `/api${res.data[0]?.contentValue}`
+  }
+}
+
 // 初始化时计算高度，监听窗口resize和左侧内容变化
 onMounted(() => {
+  getProfileBgInfo()
   updateRightHeight();
   window.addEventListener('resize', updateRightHeight);
 });
@@ -78,14 +112,21 @@ watchEffect(() => {
 });
 </script>
 <style scoped>
+.user-home-container {
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 /* 根容器：使用相对宽度+最小宽度，避免过窄 */
 .card {
   width: 60%;
   max-width: 1200px;
   min-width: 320px;
   margin: 0 auto;
-  margin-top: 2rem;
-  padding: 0 1rem;
+  padding: 2rem 1rem;
   /* 确保卡片不限制内部高度 */
   box-sizing: border-box;
 }

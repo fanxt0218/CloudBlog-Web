@@ -1,7 +1,7 @@
 <template>
   <div class="account-setting">
     <div class="head-image">
-      <img :src="`/api/profile/system/accountSettingBG1.png`">
+      <img :src="`/api${personalBgInfo[0]?.contentValue}`">
     </div>
     <div class="setting">
       <div class="setting-title">账号设置</div>
@@ -60,10 +60,14 @@ import type { AccountSetting } from '@/types/index'
 import AccountEditDialog from './AccountEditDialog.vue'
 import { useRouter } from 'vue-router'
 import { useUserInfoStore } from '@/stores/userInfo'
+import { getWebsiteComponents } from '@/api/index/website'
+import type { WebsiteComponentDefine } from '@/types/index'
 
 let accountSetting = ref<AccountSetting | null>(null)
 const editDialog = ref()
 const router = useRouter()
+
+let personalBgInfo = ref<WebsiteComponentDefine[] | []>([])
 
 /** 打开弹窗 */
 const openDialog = (
@@ -129,6 +133,16 @@ const handleEmail = (email: string) => {
         const maskedMiddle = '*'.repeat(middle.length);
         return `${prefix}${maskedMiddle}${suffix}`;
      })
+}
+
+const getPersonalBgInfo = async () => {
+  const res : any = await getWebsiteComponents({
+    category: 'USER',
+    contentType: 'personal_bg'
+  })
+  if (res.code === 200) {
+    websiteComponents.value = res.data
+  }
 }
 
 defineExpose({ refreshAccountSettings })

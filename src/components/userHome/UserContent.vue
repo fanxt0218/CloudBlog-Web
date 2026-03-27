@@ -46,9 +46,10 @@ let userHomeStore = useUserHomeStore();
     padding: 1rem 0.7rem; /* 相对单位（原16px 10px） */
     height: 98.7%;
     width: 100%; /* 关键：占满父容器宽度，不再硬编码735px */
-    box-sizing: border-box; /* 确保border和padding不增加总宽度 */
+    box-sizing: border-box; /* 确保border and padding不增加总宽度 */
     display: flex; /* 添加flex布局 */
     flex-direction: column; /* 垂直排列子元素 */
+    background-color: #ffffff;
 }
 
 .head {

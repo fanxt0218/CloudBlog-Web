@@ -288,6 +288,7 @@ onMounted(() => {
     width: 99%; /* 关键：填满父容器（.left-section）的宽度 */
     min-height: 100%; /* 移除固定min-height，由内容撑开高度 */
     box-sizing: border-box; /* 确保padding不增加总宽度 */
+    background-color: #ffffff;
 }
 
 .title-content {
