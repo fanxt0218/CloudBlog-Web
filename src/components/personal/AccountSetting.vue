@@ -141,13 +141,14 @@ const getPersonalBgInfo = async () => {
     contentType: 'personal_bg'
   })
   if (res.code === 200) {
-    websiteComponents.value = res.data
+    personalBgInfo.value = res.data
   }
 }
 
 defineExpose({ refreshAccountSettings })
 
 onMounted(() => {
+  getPersonalBgInfo()
   getAccountSettings(Number(localStorage.getItem('userId'))).then((res) => {
     accountSetting.value = res.data
   })

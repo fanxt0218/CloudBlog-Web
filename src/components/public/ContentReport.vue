@@ -5,6 +5,7 @@
     width="500px"
     @closed="handleClosed"
     append-to-body
+    :z-index="zIndex"
   >
     <div class="report-container">
       <div class="content-info">
@@ -69,6 +70,7 @@ const props = defineProps<{
   targetId: number;
   targetType: number; // 0 为文章，1 为动态
   title: string;
+  zIndex?: number;
 }>();
 
 const visible = ref(false);

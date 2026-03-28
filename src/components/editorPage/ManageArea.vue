@@ -160,6 +160,7 @@ import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue'
 import type { UploadFile, UploadInstance, UploadProps, UploadRawFile } from 'element-plus'
 import { el } from 'element-plus/es/locales.mjs';
 import { useRouter } from 'vue-router';
+import { getPostViewPage } from '@/api/index/viewPage';
 
 const router = useRouter();
 
@@ -502,11 +503,43 @@ const aiSumarry = async () => {
   }
 }
 
+// 数据回填
+/**
+ * 刷新文章详情
+ */
+const refreshPostDetail = async (postId: number) => {
+  try {
+    const res = await getPostViewPage({
+        postId
+    })
+    if (res.code === 200) {
+      const post = res.data || {}
+      tags.value = post.tagList || []
+      coverUrl.value = post.image || ''
+      abstract.value = post.introduction || ''
+      selectedCategoryId.value = [post.categoryId]
+      contentType.value = post.postType || '0'
+      visibilityScope.value =post.type || '0'
+      isLimitVipRead.value = Boolean(post.isVip) || false
+
+      // 设置文章id
+      draftId.value = postId
+      console.log('文章详情刷新成功：', post)
+    } else {
+      ElMessage.error(res.msg || '文章详情刷新失败')
+    }
+  } catch (e) {
+    ElMessage.error('文章详情刷新失败')
+  }
+}
+
 // 监听selectedDraftId变化
 watch(() => props.selectedDraftId, (newDraftId) => {
   if (newDraftId) {
     draftId.value = newDraftId
     isDraft.value = true
+    // 获取草稿配置信息
+    refreshPostDetail(newDraftId)
     console.log('ManageArea组件选择草稿：', newDraftId, '设置为草稿状态', isDraft.value)
   }
 }, { immediate: true })

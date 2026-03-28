@@ -34,9 +34,24 @@
                             </path>
                     </svg>
                     {{ item.likeCount }}</span>
-                    <span class="del action" v-if="item.userId === userId" @click="toggleDelComment(item.commentId)">
-                        删除
-                    </span>
+                <div class="more-options-wrapper action" v-if="item.userId !== userId">
+                    <svg t="1766849818698" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="11068" width="17" height="17">
+                        <path d="M227.84 535.04m-51.2 0a51.2 51.2 0 1 0 102.4 0 51.2 51.2 0 1 0-102.4 0Z" fill="currentColor" p-id="11069"></path><path d="M504.32 535.04m-51.2 0a51.2 51.2 0 1 0 102.4 0 51.2 51.2 0 1 0-102.4 0Z" fill="currentColor" p-id="11070"></path><path d="M796.16 535.04m-51.2 0a51.2 51.2 0 1 0 102.4 0 51.2 51.2 0 1 0-102.4 0Z" fill="currentColor" p-id="11071">
+                        </path>
+                    </svg>
+                    <!-- 弹出框 -->
+                    <div class="popup-box">
+                        <div class="popup-item" @click="handleReport">
+                            <svg t="1766852549056" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="12307" width="15" height="15">
+                                <path d="M512 358.555826c-12.288 0-22.26087 9.97287-22.26087 22.26087l0 268.221217c0 12.288 9.97287 22.26087 22.26087 22.26087s22.26087-9.97287 22.26087-22.26087L534.26087 380.816696C534.26087 368.528696 524.288 358.555826 512 358.555826zM512 716.176696c-12.288 0-22.26087 9.97287-22.26087 22.26087l0 44.699826c0 12.288 9.97287 22.26087 22.26087 22.26087s22.26087-9.97287 22.26087-22.26087l0-44.699826C534.26087 726.149565 524.288 716.176696 512 716.176696zM998.912 867.394783 575.688348 131.33913C559.972174 104.025043 536.754087 88.33113 512 88.33113S464.027826 104.025043 448.311652 131.33913L25.088 867.394783c-8.859826 15.426783-13.356522 30.675478-13.356522 45.345391 0 32.456348 23.908174 65.224348 77.312 65.224348l845.913043 0c53.381565 0 77.289739-32.768 77.312-65.224348C1012.268522 898.070261 1007.771826 882.821565 998.912 867.394783zM934.956522 933.420522 89.043478 933.420522c-9.861565 0-32.790261-2.025739-32.790261-20.702609 0-6.678261 2.56-14.669913 7.41287-23.129043L486.912 153.533217c15.137391-26.290087 35.06087-26.290087 50.198261 0l423.223652 736.033391c4.85287 8.45913 7.41287 16.450783 7.41287 23.129043C967.746783 931.394783 944.818087 933.420522 934.956522 933.420522z" fill="currentColor"></path>
+                            </svg>
+                            <span>举报</span>
+                        </div>
+                    </div>
+                </div>
+                <span class="del action" v-if="item.userId === userId" @click="toggleDelComment(item.commentId)">
+                    删除
+                </span>
             </div>
 
             <!-- 子评论 -->
@@ -74,14 +89,25 @@
 
         </div>
     </div>
+    <!-- 举报弹窗 -->
+    <ContentReport
+      ref="reportRef"
+      :target-id="item.commentId"
+      :target-type="2"
+      :title="item.content"
+      :z-index="1000005"
+      class="report_bar"
+    />
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { formatRelativeTime } from '@/utils/timeUtil'
 import { changeLikeStatus } from '@/api/userInfo/homePage'
 import { delComment } from '@/api/index/viewPage'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
+import ContentReport from '@/components/public/ContentReport.vue'
 
 const router = useRouter()
 
@@ -144,6 +170,16 @@ const replyCommentP = (parentCommentId: number, parentUserName: string) => {
         commentId: parentCommentId,
         userName: parentUserName
     })
+}
+
+// 举报弹窗
+const reportRef = ref();
+
+/**
+ * 处理举报点击
+ */
+const handleReport = () => {
+  reportRef.value?.open();
 }
 
 /**
@@ -318,14 +354,63 @@ const jumpToHome = (userId: number) => {
 }
 
 /* 默认隐藏 */
-.del {
+.del,
+.more-options-wrapper {
   opacity: 0;
   transition: opacity 0.2s;
 }
 
-/* 只在 hover 当前 comment-item 时，显示它“自己的” reply */
-.comment-item:hover > .comment-main > .comment-actions > .del {
+/* 只在 hover 当前 comment-item 时，显示它“自己的” reply 和更多选项 */
+.comment-item:hover > .comment-main > .comment-actions > .del,
+.comment-item:hover > .comment-main > .comment-actions > .more-options-wrapper {
   opacity: 1;
 }
 
+/* 更多选项弹出框 */
+.more-options-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.popup-box {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 4px 0;
+  min-width: 80px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.more-options-wrapper:hover .popup-box {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.popup-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  color: #515151;
+  font-size: 13px;
+}
+
+.popup-item:hover {
+  background: #f5f5f5;
+  color: #ff7f6e;
+}
+
+.report_bar {
+}
 </style>
