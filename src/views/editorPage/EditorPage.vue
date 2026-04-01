@@ -8,7 +8,7 @@
         />
     </div>
     <!-- ✅ 三栏主体 -->
-    <div class="editor-body" @wheel.prevent>
+    <div class="editor-body">
       <TocPanel :headings="headings" />
       <EditorMain
         @update-headings="headings = $event"

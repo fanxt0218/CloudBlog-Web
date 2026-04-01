@@ -5,6 +5,7 @@ import { KeyboardExtension } from './extensions/keyboard'
 import { WhitespaceExtension } from './extensions/whitespace'
 import { ImageExtension, ImageResize } from './extensions/image'
 import { CodeBlockExtension } from './extensions/codeBlock'
+import { ImagePasteExtension } from './extensions/imagePaste'
 
 export const createEditor = (onUpdate: (editor: any) => void) => {
   return useEditor({
@@ -15,6 +16,7 @@ export const createEditor = (onUpdate: (editor: any) => void) => {
       ImageExtension,
       ImageResize,
       CodeBlockExtension,
+      ImagePasteExtension,
     ],
     content: '<p></p>',
     autofocus: true,

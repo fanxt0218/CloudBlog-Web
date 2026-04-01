@@ -514,17 +514,39 @@ onMounted(async () => {
 }
 
 .post-content h1 {
-  font-size: 28px;
-  margin: 32px 0 20px;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 1.5em 0 0.8em;
+  color: #222;
 }
 
 .post-content h2 {
-  font-size: 22px;
-  margin: 28px 0 16px;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 1.4em 0 0.7em;
+  color: #333;
+}
+
+.post-content h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 1.3em 0 0.6em;
+  color: #444;
 }
 
 .post-content p {
-  margin: 14px 0;
+  line-height: 1.8;
+  font-size: 16px;
+  margin: 1.2em 0;
+}
+
+.post-content a {
+  color: #409eff;
+  text-decoration: none;
+}
+
+.post-content a:hover {
+  text-decoration: underline;
 }
 
 /* .post-content img {

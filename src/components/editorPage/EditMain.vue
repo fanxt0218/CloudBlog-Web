@@ -152,9 +152,31 @@ onBeforeUnmount(() => {
 /* 段落样式也应用相同规则 */
 :deep(.ProseMirror p) {
   line-height: 1.8;
-  font-size: 15px;
+  font-size: 16px;
   white-space: pre-wrap; /* 保留空白符 */
-  margin: 1em 0; /* 默认段落间距 */
+  margin: 1.2em 0; /* 默认段落间距 */
+}
+
+/* 标题字号调优 */
+:deep(.ProseMirror h1) {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 1.5em 0 0.8em;
+  color: #222;
+}
+
+:deep(.ProseMirror h2) {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 1.4em 0 0.7em;
+  color: #333;
+}
+
+:deep(.ProseMirror h3) {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 1.3em 0 0.6em;
+  color: #444;
 }
 
 .manage-area {
@@ -229,8 +251,27 @@ onBeforeUnmount(() => {
   overflow-x: auto;
   font-size: 14px;
   line-height: 1.6;
-  border: 1px solid #333;
   margin: 12px 0; /* 增加代码块与前后内容的间距，便于点击 */
+}
+
+/* 美化代码块滚动条 */
+:deep(pre::-webkit-scrollbar) {
+  height: 8px;
+  width: 8px;
+  background: transparent;
+}
+
+:deep(pre::-webkit-scrollbar-thumb) {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+:deep(pre::-webkit-scrollbar-thumb:hover) {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+:deep(pre::-webkit-scrollbar-track) {
+  background: transparent;
 }
 
 /* 代码高亮（highlight.js 的 token） */
@@ -293,8 +334,9 @@ onBeforeUnmount(() => {
 
 /* 自定义链接样式 - 默认无下划线，悬浮时有下划线和颜色变化 */
 :deep(.ProseMirror a) {
-  color: inherit;
+  color: #409eff;
   text-decoration: none;
+  cursor: pointer;
 }
 
 :deep(.ProseMirror a:hover) {
@@ -344,4 +386,32 @@ onBeforeUnmount(() => {
   opacity: 1;
 }
 
+</style>
+
+<style>
+/* 全局样式确保编辑器中的滚动条美化生效 */
+.ProseMirror pre::-webkit-scrollbar {
+  height: 8px !important;
+  width: 8px !important;
+  background: transparent !important;
+}
+
+.ProseMirror pre::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 4px !important;
+}
+
+.ProseMirror pre::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+}
+
+.ProseMirror pre::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+/* Firefox 支持 */
+.ProseMirror pre {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent !important;
+}
 </style>

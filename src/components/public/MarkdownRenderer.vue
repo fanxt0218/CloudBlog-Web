@@ -57,6 +57,16 @@ const renderedHtml = computed(() => md.render(props.content))
   display: block;
 }
 
+/* 链接 */
+.markdown-renderer a {
+  color: #409eff;
+  text-decoration: none;
+}
+
+.markdown-renderer a:hover {
+  text-decoration: underline;
+}
+
 /* 代码块 */
 .markdown-renderer pre {
   background: #f6f8fa;
