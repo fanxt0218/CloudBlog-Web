@@ -12,6 +12,7 @@
         v-for="(item, index) in newsList.slice(0, 3)"
         :key="index"
         class="news-item"
+        @click="handleJumpToNewsDetail(item)"
       >
         <img :src="`/api${item.image}`" class="cover" />
 
@@ -32,7 +33,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWhichTagStore } from '@/stores/indexWhichTag'
 import { getIndexPostList } from '@/api/index/indexPage'
-import type { IndexPostList } from '@/types/index'
+import type { IndexPostList, IndexPost } from '@/types/index'
 
 const whichTagStore = useWhichTagStore()
 const router = useRouter()
@@ -66,6 +67,14 @@ const loadHotNewsList = async () => {
   } catch (error) {
     console.error('加载资讯失败:', error)
   }
+}
+
+/**
+ * 处理跳转资讯详情页
+ * @param item 
+ */
+const handleJumpToNewsDetail = (item: IndexPost) => {
+  window.open(`/postView/${item.userId}/${item.id}`, '_blank')
 }
 
 onMounted(() => {

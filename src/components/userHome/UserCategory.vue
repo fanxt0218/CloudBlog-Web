@@ -2,7 +2,7 @@
     <div class="category-card" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
         <div class="title-content">
             <h3 class="card-title">分类专栏</h3>
-            <span class="editTag" v-show="isHovered" @click="handleManageCategories">编辑</span>
+            <span class="editTag" v-show="isHovered || !CategoryList?.categoryInfoList?.length" @click="handleManageCategories">编辑</span>
         </div>
         <div class="category-list">
             <div class="category-item" v-for="item in CategoryList?.categoryInfoList || []" :key="item.categoryId" @click="jumpToCategory(item.categoryId)">
@@ -10,7 +10,7 @@
                 <span class="category-name">{{ item.categoryName }}</span>
                 <span class="post-count">{{ item.postCount }}篇</span>
             </div>
-            <div v-if="!CategoryList || CategoryList.categoryInfoList.length === 0" class="no-category">
+            <div v-if="!CategoryList?.categoryInfoList?.length" class="no-category">
                 暂无分类信息
             </div>
         </div>
@@ -286,7 +286,7 @@ onMounted(() => {
     border-radius: 0.4rem; /* 原6px */
     padding: 1rem; /* 原16px，用rem减少冗余内边距 */
     width: 99%; /* 关键：填满父容器（.left-section）的宽度 */
-    min-height: 100%; /* 移除固定min-height，由内容撑开高度 */
+    min-height: auto; /* 移除固定min-height，避免在部分布局中塌陷 */
     box-sizing: border-box; /* 确保padding不增加总宽度 */
     background-color: #ffffff;
 }

@@ -78,8 +78,8 @@ const activeKey = ref('home')
 const topMenus: NavItem[] = [
   { key: 'home', label: '首页', icon: icons.home, path: '/homePage/index' },
   { key: 'news', label: '资讯', icon: icons.news, path: '/homePage/news' },
-  { key: 'download', label: '下载', icon: icons.download },
-  { key: 'study', label: '学习', icon: icons.study },
+  { key: 'download', label: '下载', icon: icons.download, path: '/homePage/downloads' },
+  { key: 'study', label: '学习', icon: icons.study, path: '/homePage/study' },
   { key: 'dynamic', label: '动态', icon: icons.dynamic, path: '/homePage/shares' }
 ]
 

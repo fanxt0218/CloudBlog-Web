@@ -23,7 +23,8 @@ export interface UserInfo {
     exp: number,
     level: number,
     focusCount: number,
-    isVip: number
+    isVip: number,
+    permissionId: number
 }
 
 export interface UserAchievement {

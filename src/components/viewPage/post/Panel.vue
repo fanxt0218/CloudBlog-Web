@@ -2,7 +2,7 @@
   <div class="toc-float" :class="{'toc-float-light': isLight}">
     <div class="toc-header" :class="{'toc-header-light': isLight}">目录</div>
 
-    <div class="toc-list" :style="{ maxHeight: listHeight + 'px' }">
+    <div ref="tocListRef" class="toc-list" :style="{ maxHeight: listHeight + 'px' }">
       <div
         v-for="item in tocList"
         :key="item.id"
@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts" name="Panel">
-import { onMounted, ref, onBeforeUnmount } from 'vue'
+import { onMounted, ref, onBeforeUnmount, watch, nextTick } from 'vue'
 
 interface TocItem {
   id: string
@@ -113,6 +113,24 @@ const onScroll = () => {
     }
   }
 }
+
+const tocListRef = ref<HTMLElement | null>(null)
+
+/**
+ * 监听 activeId 变化，自动滚动目录列表
+ */
+watch(activeId, async (newId) => {
+  if (!newId || !tocListRef.value) return
+  
+  await nextTick()
+  const activeItem = tocListRef.value.querySelector('.toc-item.active')
+  if (activeItem) {
+    activeItem.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest'
+    })
+  }
+})
 
 const toggleCollapse = () => {
   collapsed.value = !collapsed.value

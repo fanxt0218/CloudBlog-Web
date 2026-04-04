@@ -49,6 +49,8 @@ import SearchPage from '@/views/searchPage/index.vue'
 import AiPage from '@/views/aiPage/index.vue'
 import LoginPage from '@/views/loginPage/index.vue'
 import CreatorCenterIndex from '@/views/creatorCenter/index.vue'
+import HomeDownloads from '@/components/homePage/DowmLoadContent.vue'
+import HomeStudy from '@/components/homePage/StudyContent.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -75,6 +77,8 @@ const router = createRouter({
       children: [
         { path: 'index', component: HomeIndex },
         { path: 'news', component: HomeNews },
+        { path: 'downloads', component: HomeDownloads },
+        { path: 'study', component: HomeStudy },
         { path: 'shares', component: HomeShares },
         { path: 'focus', component: HomeFocus },
       ]

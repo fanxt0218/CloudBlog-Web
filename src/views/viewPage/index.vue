@@ -58,6 +58,7 @@ import Panel from '@/components/viewPage/post/Panel.vue';
 import RelatedSearch from '@/components/viewPage/post/RelatedSearch.vue';
 import { getWebsiteComponentInfo } from '@/utils/websiteComponent';
 import type { WebsiteComponentDefine } from '@/types';
+import { useUserInfoStore } from '@/stores/userInfo';
 
 const route = useRoute();
 const authorId = ref(Number(route.params.authorId));
@@ -109,6 +110,11 @@ watch(postName, (newName) => {
 const usePostPermission = (permission: {isVip: number, type: number, currentUserVip: number, status: number}) => {
   console.log('检查文章权限:', permission);
   // 判断是否有访问权限
+  // 判断是否是管理员
+  if (useUserInfoStore().permissionId === 0) {
+    console.log('管理员校验通过')
+    return;
+  }
   const viewPer = viewPostPermission(permission);
   console.log('文章可见权限校验结果:', viewPer);
   if (!viewPer) {

@@ -159,6 +159,7 @@ const loadCategoryInfo = async () => {
         };
         // 执行查询
         const response = await getUserCategoryDetail(param);
+        console.log('专栏详情', response)
 
         if (response && response.data) {
           categoryDetail.value = response.data;
@@ -212,7 +213,7 @@ const handleSizeChange = (newSize: number) => {
  */
 const handleJumpToPostDetail = (postId: number) => {
     console.log('跳转文章详情页, 文章id:', postId);
-    window.open(`/postView/${userId}/${postId}`, '_blank');
+    window.open(`/postView/${userId.value}/${postId}`, '_blank');
 }
 
 onMounted(async () => {

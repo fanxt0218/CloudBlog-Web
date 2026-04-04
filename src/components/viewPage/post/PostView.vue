@@ -248,7 +248,7 @@ const handleReport = () => {
  * 跳转目标专栏
  */
 const JumpToTargetCategory = () => {
-  window.open('/categoryDetail/'+ postData.value?.categoryId, '_blank');
+  window.open('/otherCategoryDetail/'+ props.authorId + '/' + postData.value?.categoryId, '_blank');
 }
 /**
  * 获取文章预览页数据

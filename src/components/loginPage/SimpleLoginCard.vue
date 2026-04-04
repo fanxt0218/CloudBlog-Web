@@ -190,6 +190,8 @@ import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { useUserInfoStore } from '@/stores/userInfo'
 import { submitWorkOrder } from '@/api/index/workOrder'
+import { getUserInfo } from '@/api/userInfo/homePage'
+import type { UserInfo } from '@/types'
 
 const router = useRouter()
 const userInfoStore = useUserInfoStore()
@@ -397,21 +399,34 @@ const handleRegister = async () => {
 
 const onLoginSuccess = (data: any) => {
   ElMessage.success('登录成功')
-  console.log('登录成功',data)
+  console.log('登录成功', data)
   localStorage.setItem('userId', data.userId)
   localStorage.setItem('token', data.token)
   userInfoStore.init()
-  router.push('/')
-  setTimeout(() => {
-    window.location.reload()
-  }, 500)
+  getUserInfo(data.userId).then((res: any) => {
+    console.log('登录用户信息', res)
+    localStorage.setItem('permissionId', res.data.permissionId)
+    // setUserInfo handles persistence to localStorage
+    userInfoStore.setUserInfo({
+      isVip: res.data.isVip, 
+      permissionId: res.data.permissionId 
+    })
+    
+    router.push('/')
+    setTimeout(() => {
+      window.location.reload()
+    }, 50)
+  }).catch(err => {
+    console.error('获取用户信息失败', err)
+    router.push('/')
+  })
 }
 
 /**
  * 忘记密码
  */
 const forgetPass = async () => {
-  if(!loginForm.target) {
+  if (!loginForm.target) {
     ElMessage.warning('请先填写手机号')
     return;
   }
@@ -421,7 +436,7 @@ const forgetPass = async () => {
     orderType: 3,
     reason: "登录时忘记密码，申请重置" 
   }
-  const res : any = await submitWorkOrder(data)
+  const res: any = await submitWorkOrder(data)
   if (res.code === 200) {
     ElMessage.success("提交成功，请于1-3个工作日后尝试登录")
   } else {
