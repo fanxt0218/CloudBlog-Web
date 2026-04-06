@@ -323,6 +323,11 @@ onUnmounted(() => {
   line-height: 1.5;
   font-weight: 400;
   cursor: pointer;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .share-brief {
@@ -332,6 +337,11 @@ onUnmounted(() => {
   line-height: 1.5;
   font-weight: 400;
   cursor: pointer;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .share-brief:hover {
