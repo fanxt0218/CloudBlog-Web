@@ -15,7 +15,7 @@
                     <div class="collector-item" v-for="item in collectList" :key="item.id">
                         <div class="collector-info">
                             <div class="collector-name">{{ item.favoritesName }}</div>
-                            <div class="collector-meta">24条内容 · 私密</div>
+                            <div class="collector-meta">{{ item.collectCount }}条内容 · 公开</div>
                         </div>
                         <div class="collector-action">
                             <button class="collect-btn" :class="{active: targetHasCollected.includes(item.id)}" @click="handleCollect(item.id)">{{ targetHasCollected.includes(item.id) ? '已收藏' : '收藏' }}</button>

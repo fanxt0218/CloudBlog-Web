@@ -249,7 +249,7 @@ const saveAsHtml = async() => {
     vip: isLimitVipRead.value ? 1 : 0
   }
   // 发布文章
-  publishPost(postData).then(res => {
+  publishPost(postData).then((res: any) => {
     if(res.code === 200){
       // 跳转页面,不允许返回该页面
       // 使用router.replace()替换当前路由，防止用户通过返回按钮回到编辑页面
@@ -365,7 +365,7 @@ const saveHtmlDraft = async() => {
     title: title.value,
     content: content.value,
   }
-  saveDraft(postData).then(res => {
+  saveDraft(postData).then((res: any) => {
     if(res.code === 200){
       ElMessage.success('草稿保存成功')
       // 保存草稿id
@@ -509,12 +509,15 @@ const aiSumarry = async () => {
  */
 const refreshPostDetail = async (postId: number) => {
   try {
-    const res = await getPostViewPage({
+    const res: any = await getPostViewPage({
         postId
     })
     if (res.code === 200) {
       const post = res.data || {}
-      tags.value = post.tagList || []
+      tags.value = (post.tagList || []).map((item: any) => ({
+        ...item,
+        id: item.tagId
+      }))
       coverUrl.value = post.image || ''
       abstract.value = post.introduction || ''
       selectedCategoryId.value = [post.categoryId]

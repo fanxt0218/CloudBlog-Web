@@ -134,7 +134,8 @@ export interface UserCollect {
     favoritesName: string,
     description: string,
     createTime: string,
-    updateTime: string
+    updateTime: string,
+    collectCount: number
 }
 
 export type UserCollects = UserCollect[]
