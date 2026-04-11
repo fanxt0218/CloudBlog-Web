@@ -10,7 +10,7 @@
           <span>浏览· {{ item.browseCount }}</span>
           <span>点赞· {{ item.likeCount }}</span>
         </div>
-        <div class="edit-wrapper">
+        <div class="edit-wrapper" @click="editShare(item)">
           <span id="edit">编辑</span>
         </div>
       </div>
@@ -29,6 +29,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { getUserShareList } from '@/api/userInfo/homePage';
 import type { UserShare, UserShareItem } from '@/types/index';
+import { editShare } from '@/api/create';
 
 // 1. 响应式变量定义（匹配游标查询逻辑）
 const scrollContainer = ref<HTMLDivElement | null>(null); // 滚动容器
@@ -101,6 +102,15 @@ const handleScroll = () => {
 const handleJumpToShareDetail = (shareId: number) => {
   // 新开启标签页
   window.open(`/shareView/${shareId}`, '_blank');
+}
+
+/**
+ * 处理编辑分享
+ * @param shareId 
+ */
+const editShare = (share: UserShareItem) => {
+  // 新开启标签页
+  window.open(`/editShare/${share.id}`, '_blank');
 }
 
 // 4. 生命周期钩子

@@ -41,6 +41,7 @@ import RecommendUser from '@/components/homePage/recommendUser/RecommendUser.vue
 import HomeFocus from '@/views/homePage/HomeFocus.vue'
 import FocusAndFansList from '../../src/components/userHome/FocusAndFansList.vue'
 import PublishShare from '@/components/editorPage/publishShare/PublishShare.vue'
+import EditShare from '@/components/editorPage/publishShare/EditShare.vue'
 import ShareView from '@/components/viewPage/share/ShareView.vue'
 import PublishSuccess from '@/components/public/PublishSuccess.vue'
 import ViewPage from '@/views/viewPage/index.vue'
@@ -216,6 +217,10 @@ const router = createRouter({
     {
       path: '/publishShare',
       component: PublishShare
+    },
+    {
+      path: '/editShare/:shareId',
+      component: EditShare
     },
     {
       path: '/publishSuccess/:userId/:postId',

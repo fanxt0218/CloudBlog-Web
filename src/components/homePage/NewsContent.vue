@@ -179,7 +179,7 @@ onUnmounted(() => {
 </script>
 <style scoped>
 .news-content {
-  width: 100%;
+  width: 95%;
   display: flex;
   flex-direction: column;
   /* gap: 5px; */
@@ -261,9 +261,9 @@ onUnmounted(() => {
 .news-top-small-list {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px 30px;   /* 行、列间距 */
+  gap: 10px 0;   /* 移除水平间距，确保第二列从 50% 位置开始 */
   margin: 10px 0;
-  padding: 4px 2px;
+  padding: 4px 0;
   padding-top: 10px;
   border-top: 1px solid #eeeeee9a;
 }
@@ -274,9 +274,10 @@ onUnmounted(() => {
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  /* margin-bottom: 5px; */
   padding-bottom: 6px;
+  padding-right: 15px; /* 右侧留出间距，避免与第二列靠太近 */
   border-bottom: 1px solid #eeeeee9a;
+  box-sizing: border-box;
 }
 
 .small-item:hover .small-title {
@@ -297,6 +298,9 @@ onUnmounted(() => {
   color: #0f0f0f;
   /* 字间距 */
   letter-spacing: 0.5px;
+
+  /* 宽度限制为一半 */
+  max-width: 80%;
 
   /* 单行省略号 */
   white-space: nowrap;
