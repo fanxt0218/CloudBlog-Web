@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
 
-export const useUserHomeStore = defineStore('userHome',{
-    state:()=>({
-        postCount:0,
-        categoryCount:0
+export const useUserHomeStore = defineStore('userHome', {
+    state: () => ({
+        postCount: 0,
+        categoryCount: 0,
+        resourceCount: 0
     })
 })

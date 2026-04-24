@@ -53,6 +53,7 @@ import { eventBus } from '@/utils/eventBus';
 import { useUserHomeStore } from '@/stores/userHome';
 import { useUserInfoStore } from '@/stores/userInfo';
 import { getChatList } from '@/api/ai';
+import { getResourceList } from '@/api/create/resource';
 
 let visitCount = ref();
 let originalCount = ref(0);
@@ -96,6 +97,10 @@ onMounted(async()=>{
         blogAge.value = response.data.blogAge;
         level.value = response.data.level;
     });
+    await getResourceList({userId:Number(localStorage.getItem('userId'))}).then((response)=>{
+        console.log('发送了请求', response);
+        useUserHomeStore().resourceCount = response.data.length;
+    })
 
     useUserHomeStore().postCount = originalCount.value;
     console.log('设置了用户名', userName.value);

@@ -4,6 +4,7 @@
     <div class="tool-bar">
         <EditorToolbar v-if="editor"
                        :editor="editor"
+                       :selected-draft-id="selectedDraftId"
                        @selectDraft="selectDraft"
         />
     </div>

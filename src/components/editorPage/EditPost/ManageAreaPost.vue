@@ -151,6 +151,7 @@ import { ElMessage, genFileId } from 'element-plus'
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import type { Tag } from '@/types'
 import { uploadImage, publishPost, saveDraft } from '@/api/create';
+import { upload as uploadResource, editResource } from '@/api/create/resource';
 import { getPostViewPage } from '@/api/index/viewPage';
 import TagSelector from '../tools/TagSelector.vue';
 import { getUserCategory } from '@/api/userInfo/homePage';
@@ -159,6 +160,9 @@ import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue'
 import type { UploadFile, UploadInstance, UploadProps, UploadRawFile } from 'element-plus'
 import { summaryAbstract } from '@/api/ai';
 import { useRouter } from 'vue-router';
+import { useResourceContext } from '@/utils/editor/useResourceContext';
+
+const { pendingResource, isResourceChanged, clearPendingResource } = useResourceContext();
 
 const router = useRouter();
 
@@ -255,10 +259,33 @@ const saveAsHtml = async() => {
       // 假设发布成功后返回了文章ID，我们可以将其作为参数传递
       const postId = res.data || null;
       console.log('发布成功，文章ID:', postId, res)
+      
+      // ✅ 处理资源绑定
+      if (postId && isResourceChanged.value && pendingResource.value) {
+        const resourceData = { ...pendingResource.value, resourceBindContentId: String(postId) }
+        
+        // 逻辑审视：
+        // 1. 如果是新文章 (发布前 postId 为空)，无论是否有旧 resourceId，都按新增处理 (调用 upload)
+        // 2. 如果是修改文章 (发布前 already had postId)，根据 hasNewFile 决定是新增还是修改
+        
+        const isNewPost = !props.postId // 这里的 props.postId 代表进入编辑页时的 ID
+        
+        if (isNewPost || pendingResource.value.hasNewFile || !pendingResource.value.id) {
+          uploadResource(resourceData).then(() => {
+            console.log('资源自动绑定成功(新增)')
+            clearPendingResource()
+          }).catch(err => console.error('资源自动绑定失败', err))
+        } else {
+          editResource({ ...resourceData, id: pendingResource.value.id }).then(() => {
+            console.log('资源自动绑定成功(修改)')
+            clearPendingResource()
+          }).catch(err => console.error('资源自动修改失败', err))
+        }
+      }
+
       if (postId) {
         router.replace(`/publishSuccess/${userId.value}/${postId}`);
       } else {
-        // 如果没有返回文章ID，可以跳转到用户主页或其他合适页面
         router.replace('/userHome/postList');
       }
     }else if(res.code === 500){
@@ -531,6 +558,7 @@ const refreshPostDetail = async (postId: number) => {
 
       // 设置文章id
       draftId.value = postId
+      isDraft.value = true
       console.log('文章详情刷新成功：', post)
     } else {
       ElMessage.error(res.msg || '文章详情刷新失败')

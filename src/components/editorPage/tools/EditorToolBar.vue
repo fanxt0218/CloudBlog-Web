@@ -119,6 +119,9 @@
       <!-- Image Tool -->
       <ImageTool :editor="editor" />
 
+      <!-- Resource Bind Tool -->
+      <ResourceBindTool :editor="editor" :selected-draft-id="selectedDraftId" />
+
       <!-- 草稿 -->
       <div class="draft-wrapper">
         <div
@@ -155,12 +158,15 @@ import ColorPicker from './ColorPicker.vue'
 import AlignDropdown from './AlignDropDown.vue'
 import CodeBlockDialog from './CodeBlockDialog.vue'
 import LinkDialog from './LinkDiaLog.vue'  // 新增导入
-import ImageTool from './ImageTool.vue'
+import ResourceBindTool from './ResourceBindTool.vue'
 import DraftLib from '@/components/public/DraftLib.vue'
 import { getPostViewPage } from '@/api/index/viewPage.ts'
 import type { PostView } from '@/types/index.ts'
 
-const props = defineProps<{ editor: any }>()
+const props = defineProps<{ 
+  editor: any,
+  selectedDraftId?: number | null
+}>()
 
 const emit = defineEmits(['selectDraft'])
 

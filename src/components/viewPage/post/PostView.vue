@@ -32,6 +32,23 @@
                     专栏收录该内容
                 </div>
             </div>
+            <div class="resource-area" v-if="resourceList && resourceList.length > 0">
+                <div v-for="res in resourceList" :key="res.id" class="resource-card">
+                    <div class="resource-icon">
+                        <div class="format-icon" :class="res.resourceFormat?.toLowerCase()">
+                           <span class="format-text">{{ res.resourceFormat?.toUpperCase() || 'FILE' }}</span>
+                           <div class="zip-tag" v-if="res.resourceFormat?.toLowerCase() === 'zip'">ZIP</div>
+                        </div>
+                    </div>
+                    <div class="resource-info">
+                        <div class="res-name">{{ res.resourceName }}</div>
+                        <div class="res-desc">{{ res.resourceDescription }}</div>
+                    </div>
+                    <div class="resource-action">
+                        <div class="download-btn" @click="handleDownload(res)">立即下载</div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="render-area" id="post-content">
           <div class="post-content">
@@ -153,7 +170,7 @@ import { ref, onMounted } from 'vue';
 import { getPostViewPage } from '@/api/index/viewPage';
 import type { PostView } from '@/types/index'
 import { getUserInfo, changeLikeStatus, changeCollectStatus } from '@/api/userInfo/homePage';
-import type { UserInfo } from '@/types/index'
+import type { UserInfo, Resource } from '@/types/index'
 import { ElMessage } from 'element-plus';
 import CommentBar from '@/components/viewPage/comment/CommentBar.vue';
 import HtmlRenderer from '@/components/public/HtmlRenderer.vue';
@@ -161,6 +178,8 @@ import MarkdownRenderer from '@/components/public/MarkdownRenderer.vue';
 import CollectBar from '@/components/public/CollectBar.vue';
 import ContentReport from '@/components/public/ContentReport.vue';
 import { useUserInfoStore } from '@/stores/userInfo';
+import { getResourceList, checkResourceDownload, downloadResource } from '@/api/create/resource'
+import { ca } from 'element-plus/es/locale/index.mjs';
 
 const props = defineProps<{
     postId: number;
@@ -174,6 +193,8 @@ let postData = ref<PostView | null>(null);
 let authorInfo = ref<UserInfo | null>(null);
 
 const userInfoStore = useUserInfoStore()
+
+let resourceList = ref<Resource[] | null>(null)
 
 // 评论栏
 const showCommentBar = ref(false);
@@ -250,6 +271,64 @@ const handleReport = () => {
 const JumpToTargetCategory = () => {
   window.open('/otherCategoryDetail/'+ props.authorId + '/' + postData.value?.categoryId, '_blank');
 }
+
+/**
+ * 获取资源列表
+ */
+const getResourceInfo = () => {
+    getResourceList({
+        contentId: props.postId,
+        userId: userInfoStore.userId || undefined
+    }).then((res: any) => {
+        resourceList.value = res.data;
+    });
+}
+
+/**
+ * 处理资源下载
+ * @param url 
+ */
+const handleDownload = async (resource: Resource) => {
+    if (!resource.resourceUrl) {
+        ElMessage.warning('资源链接无效');
+        return;
+    }
+    // window.open(`/api${url}`, '_blank');
+    const res : any = await checkResourceDownload({
+      userId: userInfoStore.userId,
+      resourceId: resource.id
+    })
+    console.log('执行1完成')
+    if (res.code === 200) {
+      downloadResource({
+        userId: userInfoStore.userId ,
+        url: res.data.resourceUrl,
+        filename: res.data.resourceUrl,
+        token: res.data.token
+      }).then((blob: any) => {
+        console.log('下载执行完成');
+        // 将 Blob 转换为 URL
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        
+        // 设置下载文件名
+        const fileName = resource.resourceName + (resource.resourceFormat ? `.${resource.resourceFormat.toLowerCase()}` : '');
+        link.setAttribute('download', fileName);
+        
+        document.body.appendChild(link);
+        link.click();
+        
+        // 清理
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+        ElMessage.success('下载成功');
+      }).catch(err => {
+        console.error('资源下载失败:', err);
+        ElMessage.error('资源请求失败');
+      })
+    }
+}
 /**
  * 获取文章预览页数据
  */
@@ -275,6 +354,9 @@ onMounted(async () => {
             console.error('获取当前用户信息失败:', err);
         }
     }
+
+    getResourceInfo();
+
 
     // 发送文章标题给父组件
     console.log('发送文章标题给父组件:', postData.value?.title);
@@ -639,5 +721,122 @@ onMounted(async () => {
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
   z-index: 999998;
+}
+
+.resource-area {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.resource-card {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border: 1px solid #eeeeeeb1;
+    border-radius: 8px;
+    background: #fff;
+    transition: all 0.3s ease;
+}
+
+.resource-card:hover {
+    border-color: #ff7f6e80;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.resource-icon {
+    width: 44px;
+    height: 50px;
+    margin-right: 16px;
+    flex-shrink: 0;
+}
+
+.format-icon {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    border: 2px solid #ff7f6e80;
+    border-radius: 6px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #ff7f6e;
+    box-sizing: border-box;
+}
+
+/* 模拟图片中的折角效果 */
+.format-icon::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    background: linear-gradient(135deg, transparent 50%, #fff 50%);
+    border-bottom: 2px solid #ff7f6e80;
+    border-left: 2px solid #ff7f6e80;
+    border-bottom-left-radius: 4px;
+}
+
+.format-text {
+    font-size: 10px;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+.zip-tag {
+    position: absolute;
+    bottom: 8px;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.resource-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden;
+}
+
+.res-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.res-desc {
+    font-size: 13px;
+    color: #888;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.resource-action {
+    margin-left: 20px;
+}
+
+.download-btn {
+    padding: 8px 18px;
+    background: #fff7f5;
+    color: #ff7f6e;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid #ff7f6e20;
+}
+
+.download-btn:hover {
+    background: #ff7f6e;
+    color: #fff;
 }
 </style>

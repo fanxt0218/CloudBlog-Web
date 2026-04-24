@@ -4,6 +4,7 @@
     <div class="tool-bar">
         <EditorToolbar v-if="editor"
                        :editor="editor"
+                       :selected-draft-id="selectedDraftId"
                        @selectDraft="selectDraft"
         />
     </div>
@@ -65,6 +66,7 @@ const selectDraft = (singleDraftId: number, singleTitle: string) => {
 }
 
 onMounted(() => {
+  selectedDraftId.value = postId
   console.log('EditPostPage 挂载完成')
   document.title = '写文章 - CloudBlog创作'
 })

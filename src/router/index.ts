@@ -52,6 +52,7 @@ import LoginPage from '@/views/loginPage/index.vue'
 import CreatorCenterIndex from '@/views/creatorCenter/index.vue'
 import HomeDownloads from '@/components/homePage/DowmLoadContent.vue'
 import HomeStudy from '@/components/homePage/StudyContent.vue'
+import ResourceList from '@/components/userHome/ResourceList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -95,6 +96,7 @@ const router = createRouter({
         { path: 'postList', component: PostList },
         { path: 'categoryList', component: CategoryList },
         { path: 'shareList', component: ShareList },
+        { path: 'resourceList', component: ResourceList },
         {
           path: 'collectList',
           component: CollectList,

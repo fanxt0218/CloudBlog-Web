@@ -814,3 +814,26 @@ export interface WebsiteComponentDefine {
     createTime: string,
     updateTime: string
 }
+
+/**
+ * 资源信息
+ */
+export interface Resource {
+    id: number,
+    resourceName: string,
+    resourceUrl: string,
+    resourceSize: string,
+    resourceType: string,
+    resourceFormat: string,
+    resourceDescription: string,
+    resourceTags: string,
+    resourceStatus: number,
+    resourceCreator: number,
+    resourceUpdateTime: string,
+    resourceCreateTime: string,
+    resourceIsPublic: number,
+    resourceBindContentId: number | null,
+    resourceBindContentType: number | null,
+    vipResource: number,
+    downloadCount: number
+}

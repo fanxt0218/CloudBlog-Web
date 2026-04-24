@@ -15,6 +15,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Undo, Redo, Bold, Italic, Underline, List, ListOrdered, Code, Link, Image } from 'lucide-vue-next'
+import { UploadFilled } from '@element-plus/icons-vue'
 
 const props = defineProps<{
   icon: string
@@ -37,7 +38,8 @@ const iconMap = {
   ListOrdered,
   Code,
   Link,
-  Image
+  Image,
+  UploadFilled
 }
 
 const iconComponent = computed(() => iconMap[props.icon as keyof typeof iconMap] || null)
