@@ -837,3 +837,37 @@ export interface Resource {
     vipResource: number,
     downloadCount: number
 }
+
+/**
+ * 首页资源
+ */
+export interface IndexResourceItem {
+    id: number,
+    resourceName: string,
+    resourceUrl: string,
+    resourceSize: string,
+    resourceType: string,
+    resourceFormat: string,
+    resourceDescription: string,
+    resourceTags: string,
+    resourceStatus: number,
+    resourceCreator: number,
+    resourceCreatorName: string,
+    resourceCreatorAvator: string,
+    resourceUpdateTime: string,
+    resourceCreateTime: string,
+    resourceIsPublic: number,
+    resourceBindContentId: number | null,
+    resourceBindContentType: number | null,
+    vipResource: number,
+    downloadCount: number
+}
+export interface IndexResource {
+    content: IndexResourceItem[];
+    currentPage: number,
+    pageSize: number,
+    totalElements: number,
+    totalPages: number,
+    hasNext: boolean,
+    nextCursor: string
+}

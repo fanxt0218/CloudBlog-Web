@@ -96,8 +96,32 @@ export const downloadResource = (data: {
     filename: string
     token: string
 }) => {
-    return request.get(`/content/resource/download`, { 
+    return request.get(`/content/resource/download`, {
         params: data,
         responseType: 'blob'
     })
+}
+
+/**
+ * 获取精选资源
+ */
+export const getSelectedResource = () => {
+    return request.get(`/content/resource/getSelectedResource`)
+}
+
+/**
+ * 获取首页资源
+ */
+export const getIndexResource = (data: {
+    po: {
+        userId?: number | null,
+        name?: string | null,
+        tagName?: string | null
+    }
+    params: {
+        cursor?: string | null,
+        size?: number | null
+    }
+}) => {
+    return request.post(`/content/resource/getIndexResource`, data.po, { params: data.params })
 }
