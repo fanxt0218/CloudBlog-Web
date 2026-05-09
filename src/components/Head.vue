@@ -160,7 +160,7 @@
 </template>
 
 <script setup lang="ts" name="Head">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { getUserInfo,getUserAchievement } from '@/api/userInfo/homePage'
 import { login } from '@/api/index/indexPage'
 import router from '@/router'
@@ -203,7 +203,7 @@ let showPopup = ref(false)
 let insidePopup = ref(false)
 let hasNewMessage = ref(false) // 消息状态变量
 
-const searchInput = ref(route.query.q as string || '')
+let searchInput = ref(route.query.q as string || '')
 
 const handleSearch = () => {
   console.log('触发搜索',searchInput.value,route.name)
@@ -225,6 +225,11 @@ const userInfoStore = useUserInfoStore()
 
 // 创作按钮是否显示
 let showCreate = ref(true)
+
+// 监听路由参数变化，同步搜索框内容
+watch(() => route.query.q, (newVal) => {
+  searchInput.value = (newVal as string) || ''
+})
 
 
 const handleMouseLeave = () => {

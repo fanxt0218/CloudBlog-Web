@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import { pa } from 'element-plus/es/locales.mjs';
 
 /**
  * 上传文件
@@ -81,7 +80,7 @@ export const chatStream = async (userId: number, message: string, conversationId
  * 删除对话
  */
 export const deleteChat = (conversationId: string) => {
-  return request.delete(`/ai/deleteChat`, {
+  return request.post(`/ai/deleteChat`, {}, {
     params: {
       conversationId
     }

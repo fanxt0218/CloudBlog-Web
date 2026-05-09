@@ -117,6 +117,7 @@ export const getIndexResource = (data: {
         userId?: number | null,
         name?: string | null,
         tagName?: string | null
+        vip?: number | null
     }
     params: {
         cursor?: string | null,
@@ -124,4 +125,11 @@ export const getIndexResource = (data: {
     }
 }) => {
     return request.post(`/content/resource/getIndexResource`, data.po, { params: data.params })
+}
+
+/**
+ * 获取资源详情
+ */
+export const getResourceDetail = (data: { resourceId: string | number }) => {
+    return request.get(`/content/resource/getDetail`, { params: data })
 }

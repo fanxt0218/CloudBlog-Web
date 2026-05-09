@@ -21,9 +21,9 @@
                 </div>
 
                 <!-- 操作区域 -->
-                <div class="item-action">
+                <!-- <div class="item-action">
                     <span class="edit-btn" @click="handleEdit(item)">编辑</span>
-                </div>
+                </div> -->
             </div>
 
             <!-- 空状态 -->
@@ -151,7 +151,7 @@
     </div>
 </template>
 
-<script lang="ts" setup name="ResourceList">
+<script lang="ts" setup name="OtherResourceList">
 import { ref, onMounted, reactive, computed } from 'vue'
 import { useUserHomeStore } from '@/stores/userHome'
 import { useUserInfoStore } from '@/stores/userInfo'
@@ -159,9 +159,13 @@ import { getResourceList, getResourceCategory, editResource, uploadResource } fr
 import type { Resource, Tag } from '@/types/index'
 import { ElMessage, ElLoading } from 'element-plus'
 import TagSelector from '@/components/editorPage/tools/TagSelector.vue'
+import { useRoute } from 'vue-router'
 
 let userInfoStore = useUserInfoStore()
 let userHomeStore = useUserHomeStore()
+
+const route = useRoute();
+const userId = ref<number>(Number(route.params.userId));
 
 let resourceList = ref<Resource[]>([])
 let categories = ref<any[]>([])
@@ -213,7 +217,7 @@ const formatTime = (timeStr: string) => {
  */
 const fetchResourceList = () => {
     getResourceList({
-        userId: userInfoStore.userId
+        userId: userId.value
     }).then((res: any) => {
         if (res.code === 200) {
             const data = res.data;

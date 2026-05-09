@@ -4,6 +4,7 @@
             <SearchFilterBar :searchResultCount="searchResultCount"/>
             <div class="content-area">
                 <SearchUserResult v-if="currentTab === 'user'" @searchResultCount="handleSearchResultCount" />
+                <SearchResourceList v-else-if="currentTab === 'download'" @searchResultCount="handleSearchResultCount" />
                 <SearchResultList v-else @searchResultCount="handleSearchResultCount"  />
                 <div class="right-area">
                     <HotSearch />
@@ -20,6 +21,7 @@
 import SearchFilterBar from '@/components/searchPage/SearchFilterBar.vue'
 import SearchResultList from '@/components/searchPage/SearchResultList.vue'
 import SearchUserResult from '@/components/searchPage/SearchUserResult.vue'
+import SearchResourceList from '@/components/searchPage/SearchResourceList.vue'
 import HotSearch from '@/components/searchPage/searchPageCards/hotSearch.vue'
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -60,7 +62,9 @@ onMounted(() => {
     align-items: flex-start;
 }
 /* 让搜索结果列表占据剩余空间 */
-:deep(.search-result-list) {
+:deep(.search-result-list),
+:deep(.search-user-result),
+:deep(.search-resource-list) {
     flex: 1;
     min-width: 0;
 }

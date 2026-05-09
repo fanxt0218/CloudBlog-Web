@@ -78,6 +78,7 @@ let totalSearchResultCount = ref(0);
  * 加载数据
  */
 const loadData = async() => {
+    console.log('触发搜索Result')
     if (isLoading.value || isFinished.value) return;
     isLoading.value = true;
     console.log('查询前currentCursor', currentCursor.value);

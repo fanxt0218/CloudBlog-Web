@@ -1,11 +1,11 @@
 <template>
     <div class="left-info">
         <div class="author-info">
-            <div class="avatar">
+            <div class="avatar" @click="jumpToAuthorProfile">
                 <img :src="`/api${authorInfo?.image}`" alt="">
             </div>
             <div class="author-info-right">
-                <div class="author-name">{{ authorInfo?.userName }}</div>
+                <div class="author-name" @click="jumpToAuthorProfile">{{ authorInfo?.userName }}</div>
                 <div class="author-level">
                     <div class="level-info">
                         等级
@@ -96,6 +96,13 @@ const handlePrivateMessage = () => {
   router.push('/messageCenter/myMessage')
 }
 
+/**
+ * 跳转作者主页
+ */
+const jumpToAuthorProfile = () => {
+  window.open(`/otherUserHome/${props.authorId}`, '_blank')
+}
+
 onMounted(async () => {
     const res = await getUserInfo(props.authorId);
     authorInfo.value = res.data;
@@ -134,6 +141,7 @@ onMounted(async () => {
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
+  cursor: pointer;
 }
 
 .avatar img {
@@ -152,6 +160,7 @@ onMounted(async () => {
   font-weight: 600;
   color: #1f2329;
   margin-bottom: 6px;
+  cursor: pointer;
 }
 
 .author-level {
@@ -246,6 +255,7 @@ onMounted(async () => {
   border-radius: 18px;
   cursor: pointer;
   transition: all 0.2s;
+  font-size: 14px;
 }
 
 .message-btn:hover {

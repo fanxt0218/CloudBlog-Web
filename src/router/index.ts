@@ -53,6 +53,10 @@ import CreatorCenterIndex from '@/views/creatorCenter/index.vue'
 import HomeStudy from '@/components/homePage/StudyContent.vue'
 import ResourceList from '@/components/userHome/ResourceList.vue'
 import HomeResource from '@/views/homePage/HomeResource.vue'
+import ResourceDetail from '@/views/viewPage/ResourceDetail.vue'
+import OtherResourceList from '@/components/userHome/otherUserHome/OtherResourceList.vue'
+import SubmitWorkOrder from '@/views/workOrder/SubmitWorkOrder.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -184,6 +188,7 @@ const router = createRouter({
         { path: 'postList', component: OtherPostList },
         { path: 'categoryList', component: OtherCategoryList },
         { path: 'shareList', component: OtherShareList },
+        { path: 'resourceList', component: OtherResourceList },
         {
           path: 'collectList',
           component: OtherCollectList,
@@ -240,6 +245,10 @@ const router = createRouter({
       path: '/postView/:authorId/:postId',
       component: ViewPage
     },
+    {
+      path: '/resourceDetail/:resourceId',
+      component: ResourceDetail
+    },
 
     /**
      * 编辑文章
@@ -263,8 +272,17 @@ const router = createRouter({
       path: '/login',
       component: LoginPage,
       name: 'login'
+    },
+    /**
+     * 工单提交
+     */
+    {
+      path: '/workOrder/submit',
+      component: SubmitWorkOrder,
+      name: 'submitWorkOrder'
     }
   ],
 })
+
 
 export default router

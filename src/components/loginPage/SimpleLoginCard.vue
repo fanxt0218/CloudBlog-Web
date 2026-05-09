@@ -434,7 +434,7 @@ const forgetPass = async () => {
     orderId: loginForm.target, // 暂时使用这个字段
     targetType: 3,
     orderType: 3,
-    reason: "登录时忘记密码，申请重置" 
+    reason: "登录时忘记密码，申请重置"
   }
   const res: any = await submitWorkOrder(data)
   if (res.code === 200) {

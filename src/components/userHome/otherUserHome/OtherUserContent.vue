@@ -13,6 +13,10 @@
                 <router-link :to="`/otherUserHome/${userId}/shareList`" class="tab-link" active-class="active">动态</router-link>
             </span>
             <span class="tab-group">
+                <router-link :to="`/otherUserHome/${userId}/resourceList`" class="tab-link" active-class="active">资源</router-link>
+                <span class="tab-number">{{ userHomeStore.resourceCount }}</span>
+            </span>
+            <span class="tab-group">
                 <router-link :to="`/otherUserHome/${userId}/collectList`" class="tab-link" active-class="active">收藏</router-link>
             </span>
             <span class="tab-group">

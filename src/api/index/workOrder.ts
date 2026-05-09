@@ -22,6 +22,7 @@ export const submitWorkOrder = (data: {
     targetType: number,
     orderType: number,
     reason: string,
+    filePath?: string
 }) => {
     return request.post(`/workOrder/submit`, data)
 }

@@ -157,6 +157,7 @@ import ToolbarDropdown from './ToolBarDropdown.vue'
 import ColorPicker from './ColorPicker.vue'
 import AlignDropdown from './AlignDropDown.vue'
 import CodeBlockDialog from './CodeBlockDialog.vue'
+import ImageTool from './ImageTool.vue'
 import LinkDialog from './LinkDiaLog.vue'  // 新增导入
 import ResourceBindTool from './ResourceBindTool.vue'
 import DraftLib from '@/components/public/DraftLib.vue'

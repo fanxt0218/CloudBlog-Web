@@ -77,11 +77,11 @@
                         </div>
                     </div>
                     <div class="selection-grid">
-                        <div class="selection-card" v-for="item in selectedResource" :key="item.id">
+                        <div class="selection-card" v-for="item in selectedResource" :key="item.id" @click="goToResourceDetail(item.id)">
                             <h3>{{ item.resourceName }}</h3>
                             <p>{{ item.resourceDescription }}</p>
                             <div class="card-footer">
-                                <a href="#">查看</a>
+                                <a href="#" @click.prevent>查看</a>
                             </div>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                         </div>
                     </div>
                     <div class="resource-list">
-                        <div class="resource-card" v-for="item in resourceList" :key="item.id">
+                        <div class="resource-card" v-for="item in resourceList" :key="item.id" @click="goToResourceDetail(item.id)">
                             <div class="doc-preview">
                                 <div class="doc-content">
                                     <div class="doc-tag">{{ item.resourceTags?.split(',')[0] || 'Unknown' }}</div>
@@ -144,6 +144,7 @@
 <script lang="ts" setup name="DownLoadContent">
 import { ref, onMounted, computed, watch, onUnmounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
 import { getResourceCategory, getSelectedResource, getIndexResource } from '@/api/create/resource'
 import type { Resource, IndexResource, IndexResourceItem } from '@/types'
 import { 
@@ -156,6 +157,7 @@ import {
 import { useUserInfoStore } from '@/stores/userInfo'
 
 const userInfoStore = useUserInfoStore()
+const router = useRouter()
 
 const headerImage = ref<string>('/api/profile/system/index-resource-header/header.png')
 
@@ -204,6 +206,14 @@ const getCategoryIcon = (index: number) => {
 const formatViews = (count: number) => {
     if (count > 10000) return (count / 10000).toFixed(1) + 'w+'
     return count
+}
+
+/**
+ * 跳转到资源详情页
+ */
+const goToResourceDetail = (id: number) => {
+    // router.push(`/resourceDetail/${id}`)
+    window.open(`/resourceDetail/${id}`, '_blank')
 }
 
 /**

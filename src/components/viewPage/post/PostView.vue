@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div class="resource-area" v-if="resourceList && resourceList.length > 0">
-                <div v-for="res in resourceList" :key="res.id" class="resource-card">
+                <div v-for="res in resourceList" :key="res.id" class="resource-card" @click="jumpToResourceDetail(res)">
                     <div class="resource-icon">
                         <div class="format-icon" :class="res.resourceFormat?.toLowerCase()">
                            <span class="format-text">{{ res.resourceFormat?.toUpperCase() || 'FILE' }}</span>
@@ -328,6 +328,13 @@ const handleDownload = async (resource: Resource) => {
         ElMessage.error('资源请求失败');
       })
     }
+}
+
+/**
+ * 跳转资源详情页
+ */
+const jumpToResourceDetail = (resource: Resource) => {
+  window.open(`/resourceDetail/${resource.id}`, '_blank')
 }
 /**
  * 获取文章预览页数据
