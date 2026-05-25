@@ -4,7 +4,7 @@
         <div class="hot-information">
             <HotInformation v-if="whichTagStore.whichTag !== 'news'"/>
         </div>
-        <div class="divider"></div>
+        <div class="divider" v-if="whichTagStore.whichTag !== 'news'"></div>
         <div class="extra-mess">
           <div class="concat-title">联系我们</div>
           <div class="work-time">

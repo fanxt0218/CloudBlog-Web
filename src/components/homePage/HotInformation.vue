@@ -163,5 +163,10 @@ onMounted(() => {
   line-height: 1.4;
   font-weight: 500;
   pointer-events: none;
+  /* 最多两行 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 </style>

@@ -179,7 +179,7 @@ onUnmounted(() => {
 </script>
 <style scoped>
 .news-content {
-  width: 95%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   /* gap: 5px; */
@@ -278,6 +278,7 @@ onUnmounted(() => {
   padding-right: 15px; /* 右侧留出间距，避免与第二列靠太近 */
   border-bottom: 1px solid #eeeeee9a;
   box-sizing: border-box;
+  min-width: 0;
 }
 
 .small-item:hover .small-title {
@@ -290,6 +291,7 @@ onUnmounted(() => {
   height: 7px;
   background: #c7c7c7;
   /* border-radius: 50%; */
+  flex-shrink: 0;
 }
 
 /* 标题文本样式 */
@@ -299,8 +301,8 @@ onUnmounted(() => {
   /* 字间距 */
   letter-spacing: 0.5px;
 
-  /* 宽度限制为一半 */
-  max-width: 80%;
+  flex: 1;
+  min-width: 0;
 
   /* 单行省略号 */
   white-space: nowrap;
